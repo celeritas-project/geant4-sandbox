@@ -1,0 +1,23 @@
+#-----------------------------------------------------------------------------#
+#/*!
+# * \file   sandbox/init.mac
+# * \author Stefano Tognini
+# * \brief  Macro file for the initialization of the Sandbox GUI.
+# * \note   Copyright (c) 2020 Oak Ridge National Laboratory, UT-Battelle, LLC.
+# */
+#-----------------------------------------------------------------------------#
+
+
+# Set some default verbose
+/control/verbose 2
+/control/saveHistory
+/run/verbose 2
+
+
+# Option for changing the default number of threads (in multi-threaded mode)
+#/run/numberOfThreads 4
+
+
+# Initialize kernel
+/run/initialize
+

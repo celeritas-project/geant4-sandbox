@@ -1,0 +1,102 @@
+#-----------------------------------------------------------------------------#
+# *!
+# * \file   sandbox/vis.mac
+# * \author Stefano Tognini
+# * \brief  Macro file for the visualization settings.
+# * \note   Copyright (c) 2020 Oak Ridge National Laboratory, UT-Battelle, LLC.
+# */
+#-----------------------------------------------------------------------------#
+
+
+# Creating an OpenGL view:
+/vis/open OGL 600x600-0+0
+
+
+# Creating an OpenInventor view:
+#/vis/open OIX
+
+
+# Creating a .prim file suitable for viewing in DAWN:
+#/vis/open DAWNFILE
+
+
+# Creating a .heprep file suitable for viewing in HepRApp:
+#/vis/open HepRepFile
+
+
+# Creating a .wrl file suitable for viewing in a VRML viewer:
+#/vis/open VRML2FILE
+
+
+# Disabling auto-refresh and silencing vis messages whilst scene and
+# trajectories are established:
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+
+
+# Drawing geometry:
+/vis/drawVolume
+
+
+# Specifying view angle:
+/vis/viewer/set/viewpointThetaPhi 90. 180.
+
+
+# Specifying zoom value:
+#/vis/viewer/zoom 2.
+
+
+# Specifying style
+#/vis/viewer/set/style wireframe
+#/vis/viewer/set/auxiliaryEdge true
+#/vis/viewer/set/lineSegmentsPerCircle 100
+
+
+# Drawing coordinate axes (last digit is the size of the axes):
+#/vis/scene/add/axes 0 0 0 0.1 m
+
+
+# Drawing smooth trajectories at end of event, showing trajectory points
+# with 2 pixels wide markers:
+/vis/scene/add/trajectories smooth
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 1
+
+
+# Draw hits at end of event:
+#/vis/scene/add/hits
+
+
+# To draw only gammas:
+#/vis/filtering/trajectories/create/particleFilter
+#/vis/filtering/trajectories/particleFilter-0/add gamma
+
+
+# To invert the above, drawing all particles except gammas,
+# keep the above two lines but also add:
+#/vis/filtering/trajectories/particleFilter-0/invert true
+
+
+# Many other options are available with /vis/modeling and /vis/filtering.
+# For example, to select colour by particle ID:
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
+
+
+# To select or override default colours (note: e+ is blue by default):
+#/vis/modeling/trajectories/list
+#/vis/modeling/trajectories/drawByParticleID-0/set e+ yellow
+
+
+# To superimpose all of the events from a given run:
+/vis/scene/endOfEventAction accumulate
+
+
+# Re-establish auto refreshing and verbosity:
+/vis/viewer/set/autoRefresh true
+/vis/verbose warnings
+
+
+# For file-based drivers, use this to create an empty detector view:
+#/vis/viewer/flush
