@@ -46,6 +46,8 @@ int main(int argc, char** argv)
     bool isPrintAux = false;
     bool isPrintPhysics = false;
     bool isOverlapCheck = false;
+    bool isCustomRootFile = false;
+    G4String rootFile;
     int numberOfEvents = 1;
     
     for (int i = 1; i < argc; i++)
@@ -83,6 +85,13 @@ int main(int argc, char** argv)
         if (G4String(argv[i]) == "-o")
         {
             isOverlapCheck = true;
+        }
+        
+        /// Flag for custom ROOT filename
+        if (G4String(argv[i]) == "-f")
+        {
+            isCustomRootFile = true;
+            rootFile = argv[i+1];
         }
     }
     
@@ -155,7 +164,17 @@ int main(int argc, char** argv)
     // - EventAction: Records event-like data into the ntuples.
     // - SteppingAction: Records particle-step-like data into the ntuples.
 
-    auto actionInitialization = new ActionInitialization();
+    ActionInitialization* actionInitialization;
+    
+    if (isCustomRootFile)
+    {
+        actionInitialization = new ActionInitialization(rootFile);
+    }
+    else
+    {
+        actionInitialization = new ActionInitialization();
+    }
+    
     runManager->SetUserInitialization(actionInitialization);
     
     
@@ -168,6 +187,7 @@ int main(int argc, char** argv)
     // Uncoment to print loaded physics tables
     //UImanager->ApplyCommand("/process/em/verbose 1");
 
+    
     //------------------------------- GUI -----------------------------------//
     if (isGUIEnable)
     {
@@ -210,6 +230,7 @@ int main(int argc, char** argv)
         }
     }
         
+    
     //---------------------------- Job termination --------------------------//
     // User actions, physics list, and detector construction are owned and
     // deleted by the run manager

@@ -46,6 +46,7 @@ Options:
 
 * `-v`: Opens the Qt GUI.
 * `-n N`: Runs N events.  
+* `-f [filename]`: Selects a user-specified ROOT output filename. If not provided, the filename will be automatically defined as "rootout.root".   
 * `-p [flag]`: Prints information according to the selected flag:   
   * `aux`: Auxiliary information.   
   * `phys`: Full list of physics constructors.   
@@ -55,7 +56,7 @@ Examples:
 
 `$ ./main -p aux input.gdml`: Opens the gdml, prints auxiliary information.  
 `$ ./main -v -o -n 100 input.gdml`: Opens the gdml, checks for overlaps, runs 100 events, and opens the GUI. Upon closing the GUI, the ROOT file is saved to disk.  
-`$ ./main -n 100 input.gdml`: Opens the gdml, runs 100 events, saves the ROOT file to disk.
+`$ ./main -n 100 -f out.root input.gdml`: Opens the gdml, runs 100 events, saves the ROOT file to disk as "out.root".
 
 
 Extra files:

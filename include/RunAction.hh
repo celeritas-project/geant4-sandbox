@@ -31,6 +31,7 @@ class RunAction : public G4UserRunAction
 {
 public:
     RunAction(PrimaryGeneratorAction* primGenAct);
+    RunAction(PrimaryGeneratorAction* primGenAct, G4String rootFile);
     virtual ~RunAction();
     
     virtual void BeginOfRunAction(const G4Run*);
@@ -51,6 +52,7 @@ public:
     
 private:
     PrimaryGeneratorAction* b_primary;
+    G4String rootFile;
     
     // Event
     std::vector<G4double> d_vec_primaryE;

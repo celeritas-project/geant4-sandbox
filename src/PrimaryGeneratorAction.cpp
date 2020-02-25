@@ -14,15 +14,11 @@
 // Geant4
 #include "G4RunManager.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Box.hh"
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
-#include "Randomize.hh"
 
 
 //------------------------- PrimaryGeneratorAction --------------------------//
@@ -35,13 +31,16 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     
     // Defining a standard particle ID, direction, energy, and position
     // WARNING: Values may be overwritten by EventAction::BeginOfEventAction
-    auto particle =
-    G4ParticleTable::GetParticleTable()->FindParticle("proton");
+    G4ParticleDefinition* particle;
+    particle = G4ParticleTable::GetParticleTable()->FindParticle("mu-");
     
     b_particleGun->SetParticleDefinition(particle);
     b_particleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-    b_particleGun->SetParticleEnergy(0.5 * GeV);
-    b_particleGun->SetParticlePosition(G4ThreeVector(0, 0., +9 * cm));
+    b_particleGun->SetParticleEnergy(1 * TeV);
+    b_particleGun->SetParticlePosition(G4ThreeVector());
+    
+    // slabsGeometry.gdml center is at (0, 0, 9*cm)
+    // cms2018.gdml center is at (0, 0, 0)
 }
 
 

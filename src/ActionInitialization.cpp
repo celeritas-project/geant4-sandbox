@@ -19,7 +19,13 @@
 
 //--------------------------- ActionInitialization --------------------------//
 ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization()
+: G4VUserActionInitialization(), rootFile("rootout.root"),
+isCustomRootFile(false)
+{}
+
+ActionInitialization::ActionInitialization(G4String rootFile)
+: G4VUserActionInitialization(), rootFile(rootFile),
+isCustomRootFile(true)
 {}
 
 
@@ -39,10 +45,21 @@ void ActionInitialization::BuildForMaster() const
 //---------------------------------- Build ----------------------------------//
 void ActionInitialization::Build() const
 {
-    auto primaryGenAction = new PrimaryGeneratorAction();
-    auto runAction = new RunAction(primaryGenAction);
-    auto eventAction = new EventAction(primaryGenAction, runAction);
-    auto steppingAction = new SteppingAction(eventAction, runAction);
+    PrimaryGeneratorAction* primaryGenAction = new PrimaryGeneratorAction();
+    RunAction* runAction;
+    
+    if (isCustomRootFile)
+    {
+        runAction = new RunAction(primaryGenAction, rootFile);
+    }
+    else
+    {
+        runAction = new RunAction(primaryGenAction);
+    }
+    
+    EventAction* eventAction = new EventAction(primaryGenAction, runAction);
+    SteppingAction* steppingAction = new SteppingAction(eventAction,
+                                                        runAction);
     
     SetUserAction(primaryGenAction);
     SetUserAction(runAction);

@@ -29,24 +29,7 @@ void EventAction::BeginOfEventAction(const G4Event * event)
     d_trackEnergy = 0;
     d_trackLength = 0;
     
-    // Randomizing particle direction
-    G4int sign[3];
-    
-    for (int i = 0; i < 3; i++)
-    {
-        if (G4UniformRand() > 0.5)
-        {
-            sign[i] = 1;
-        }
-        else
-        {
-            sign[i] = -1;
-        }
-    }
-        
-    G4ThreeVector direction(sign[0] * G4UniformRand(),
-                            sign[1] * G4UniformRand(),
-                            sign[2] * G4UniformRand());
+    G4ThreeVector direction = RandomUnitaryThreeVector();
     
     b_primary->GetParticleGun()->SetParticleMomentumDirection(direction);
     G4double primaryE = b_primary->GetParticleGun()->GetParticleEnergy();
@@ -84,4 +67,31 @@ void EventAction::AddStep(G4double &stepdEdX, G4double &stepLength)
 G4int EventAction::GetEventID()
 {
     return d_eventID;
+}
+
+
+//-------------------------- RandomUnitaryThreeVector -----------------------//
+G4ThreeVector EventAction::RandomUnitaryThreeVector()
+{
+    // Randomizing the seed by using the clock time
+    CLHEP::HepRandom::setTheSeed(time(0));
+    
+    G4int sign[3];
+    for (int i = 0; i < 3; i++)
+    {
+        if (G4UniformRand() > 0.5)
+        {
+            sign[i] = 1;
+        }
+        else
+        {
+            sign[i] = -1;
+        }
+    }
+            
+    G4ThreeVector direction(sign[0] * G4UniformRand(),
+                            sign[1] * G4UniformRand(),
+                            sign[2] * G4UniformRand());
+    
+    return direction;
 }

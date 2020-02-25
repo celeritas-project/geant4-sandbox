@@ -17,6 +17,7 @@
 
 // Geant4
 #include "G4UserEventAction.hh"
+#include "G4ThreeVector.hh"
 #include "globals.hh"
 
 
@@ -39,8 +40,8 @@ public:
     virtual void  EndOfEventAction(const G4Event* event);
     
     void AddStep(G4double &stepdEdX, G4double &stepLength);
-    
     G4int GetEventID();
+    G4ThreeVector RandomUnitaryThreeVector();
 };
 
 

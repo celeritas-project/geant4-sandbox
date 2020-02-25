@@ -18,20 +18,30 @@
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 #include "G4ThreeVector.hh"
-#include "G4UnitsTable.hh"
-#include "G4SystemOfUnits.hh"
 
 
 //---------------------------- BeginOfRunAction -----------------------------//
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
-    CreateRootFile("rootout.root");
+    CreateRootFile(rootFile);
 }
 
 
 //-------------------------------- RunAction --------------------------------//
+RunAction::RunAction(PrimaryGeneratorAction* primGenAct, G4String rootFile)
+: G4UserRunAction(), b_primary(primGenAct), rootFile(rootFile)
+{
+    // Setting G4RunManager to print event number
+    G4RunManager::GetRunManager()->SetPrintProgress(1);
+    
+    ClearStepVectorMembers();
+
+    CreateRootNtuples();
+}
+
+
 RunAction::RunAction(PrimaryGeneratorAction* primGenAct)
-: G4UserRunAction(), b_primary(primGenAct)
+: G4UserRunAction(), b_primary(primGenAct), rootFile("rootout.root")
 { 
     // Setting G4RunManager to print event number
     G4RunManager::GetRunManager()->SetPrintProgress(1);
