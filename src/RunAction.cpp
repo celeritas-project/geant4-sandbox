@@ -124,11 +124,12 @@ void RunAction::CreateRootNtuples()
     analysisManager->CreateNtupleIColumn("nEvents");         // | columnID = 0
     analysisManager->CreateNtupleSColumn("primaryName");     // | columnID = 1
     analysisManager->CreateNtupleIColumn("primaryPDG");      // | columnID = 2
-    
+    analysisManager->CreateNtupleDColumn("primaryMass");     // | columnID = 3
+
     // -- event
     analysisManager->CreateNtuple("event", "truth");         // ntupleID = 1
     analysisManager->CreateNtupleIColumn("evtID");           // | columnID = 0
-    analysisManager->CreateNtupleDColumn("primaryE");        // | columnID = 1
+    analysisManager->CreateNtupleDColumn("primaryEk");       // | columnID = 1
     analysisManager->CreateNtupleDColumn("primaryP");        // | columnID = 2
     analysisManager->CreateNtupleDColumn("primaryDirX");     // | columnID = 3
     analysisManager->CreateNtupleDColumn("primaryDirY");     // | columnID = 4
@@ -246,10 +247,11 @@ void RunAction::FillEventNtuple()
                 G4double primaryE = d_vec_primaryE.at(previousEventID);
                 G4ThreeVector primaryDir =
                 d_vec_primaryDir.at(previousEventID);
-                
+                G4double primaryP = CalculatePrimaryMomentum();
+
                 analysisManager->FillNtupleIColumn(1, 0, previousEventID);
                 analysisManager->FillNtupleDColumn(1, 1, primaryE);
-                analysisManager->FillNtupleDColumn(1, 2, 0);
+                analysisManager->FillNtupleDColumn(1, 2, primaryP);
                 analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
                 analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
                 analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
@@ -266,10 +268,11 @@ void RunAction::FillEventNtuple()
             ntracks = d_vec_trkIDlist.size();
             G4double primaryE = d_vec_primaryE.at(previousEventID);
             G4ThreeVector primaryDir = d_vec_primaryDir.at(previousEventID);
+            G4double primaryP = CalculatePrimaryMomentum();
             
             analysisManager->FillNtupleIColumn(1, 0, previousEventID);
             analysisManager->FillNtupleDColumn(1, 1, primaryE);
-            analysisManager->FillNtupleDColumn(1, 2, 0);
+            analysisManager->FillNtupleDColumn(1, 2, primaryP);
             analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
             analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
             analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
@@ -293,10 +296,10 @@ void RunAction::FillEventNtuple()
                 ntracks = d_vec_trkIDlist.size();
                 primaryE = d_vec_primaryE.at(previousEventID);
                 primaryDir = d_vec_primaryDir.at(previousEventID);
-                
+
                 analysisManager->FillNtupleIColumn(1, 0, previousEventID);
                 analysisManager->FillNtupleDColumn(1, 1, primaryE);
-                analysisManager->FillNtupleDColumn(1, 2, 0);
+                analysisManager->FillNtupleDColumn(1, 2, primaryP);
                 analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
                 analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
                 analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
@@ -493,17 +496,19 @@ void RunAction::FillRunNtuple(const G4Run* run)
     // Calling analysis manager to write ROOT file
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
     
+    G4ParticleDefinition* particle;
+    particle = b_primary->GetParticleGun()->GetParticleDefinition();
+    
     // Filling ntuple: run
     G4int numberOfEvents = run->GetNumberOfEvent();
-    G4String primaryName =
-    b_primary->GetParticleGun()->GetParticleDefinition()->GetParticleName();
-    G4int primaryPDG =
-    b_primary->GetParticleGun()->GetParticleDefinition()->GetPDGEncoding();
+    G4String primaryName = particle->GetParticleName();
+    G4int primaryPDG = particle->GetPDGEncoding();
+    G4double primaryMass = particle->GetPDGMass();
         
-    // Filling in the data
     analysisManager->FillNtupleIColumn(0, 0, numberOfEvents);
     analysisManager->FillNtupleSColumn(0, 1, primaryName);
     analysisManager->FillNtupleIColumn(0, 2, primaryPDG);
+    analysisManager->FillNtupleDColumn(0, 3, primaryMass);
     
     analysisManager->AddNtupleRow(0);
 }
@@ -532,4 +537,19 @@ void RunAction::ClearStepVectorMembers()
     this->d_vec_stepPosition.clear();
     this->d_vec_stepMomentum.clear();
     this->d_vec_stepGTime.clear();
+}
+
+
+//------------------------- CalculatePrimaryMomentum ------------------------//
+G4double RunAction::CalculatePrimaryMomentum()
+{
+    G4ParticleDefinition* particle;
+    particle = b_primary->GetParticleGun()->GetParticleDefinition();
+    G4double Ek = b_primary->GetParticleGun()->GetParticleEnergy();
+    G4double mass = particle->GetPDGMass();
+
+    G4double Et = Ek + mass;
+    G4double p = sqrt(Et*Et - mass*mass);
+    
+    return p;
 }

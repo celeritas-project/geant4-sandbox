@@ -38,7 +38,7 @@ public:
     virtual void  BeginOfEventAction(const G4Event* event);
     virtual void  EndOfEventAction(const G4Event* event);
     
-    virtual void AddStep(G4double &stepdEdX, G4double &stepLength);
+    void AddStep(G4double &stepdEdX, G4double &stepLength);
     
     G4int GetEventID();
 };

@@ -50,11 +50,6 @@ void EventAction::BeginOfEventAction(const G4Event * event)
     
     b_primary->GetParticleGun()->SetParticleMomentumDirection(direction);
     G4double primaryE = b_primary->GetParticleGun()->GetParticleEnergy();
-    
-    G4cout  << direction.getX()
-    << ", " << direction.getY()
-    << ", " << direction.getZ()
-    << G4endl;
 
     b_runAction->FillRunEventData(primaryE, direction);
 }

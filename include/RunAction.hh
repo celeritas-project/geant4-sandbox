@@ -36,18 +36,18 @@ public:
     virtual void BeginOfRunAction(const G4Run*);
     virtual void EndOfRunAction(const G4Run* run);
     
-    virtual void FillRunStepData(G4int &eventID,
-                                 G4int &trackID,
-                                 G4int &parentID,
-                                 G4int &pdg,
-                                 G4double &Eloss,
-                                 G4double &stepLen,
-                                 G4ThreeVector &stepPosition,
-                                 G4ThreeVector &stepMomentum,
-                                 G4double &globalTime);
+    void FillRunStepData(G4int &eventID,
+                         G4int &trackID,
+                         G4int &parentID,
+                         G4int &pdg,
+                         G4double &Eloss,
+                         G4double &stepLen,
+                         G4ThreeVector &stepPosition,
+                         G4ThreeVector &stepMomentum,
+                         G4double &globalTime);
     
-    virtual void FillRunEventData(G4double &primaryE,
-                                  G4ThreeVector &primaryDir);
+    void FillRunEventData(G4double &primaryE,
+                          G4ThreeVector &primaryDir);
     
 private:
     PrimaryGeneratorAction* b_primary;
@@ -78,13 +78,14 @@ private:
     std::vector<G4ThreeVector> d_vec_stepMomentum;
     std::vector<G4double> d_vec_stepGTime;
     
-    virtual void CreateRootFile(G4String rootFileName);
-    virtual void CreateRootNtuples();
-    virtual void FillEventNtuple();
-    virtual void FillTrackNtuple();
-    virtual void FillRunNtuple(const G4Run* run);
-    virtual void FinishRootFile();
-    virtual void ClearStepVectorMembers();
+    void CreateRootFile(G4String rootFileName);
+    void CreateRootNtuples();
+    void FillEventNtuple();
+    void FillTrackNtuple();
+    void FillRunNtuple(const G4Run* run);
+    void FinishRootFile();
+    void ClearStepVectorMembers();
+    G4double CalculatePrimaryMomentum();
 };
 
 
