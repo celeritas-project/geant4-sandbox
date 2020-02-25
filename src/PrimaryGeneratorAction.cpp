@@ -33,14 +33,15 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     G4int numberOfParticles = 1;
     b_particleGun = new G4ParticleGun(numberOfParticles);
     
-    // Defining the particle ID, direction, energy, and position
+    // Defining a standard particle ID, direction, energy, and position
+    // WARNING: Values may be overwritten by EventAction::BeginOfEventAction
     auto particle =
     G4ParticleTable::GetParticleTable()->FindParticle("proton");
     
     b_particleGun->SetParticleDefinition(particle);
     b_particleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
     b_particleGun->SetParticleEnergy(0.5 * GeV);
-    b_particleGun->SetParticlePosition(G4ThreeVector(0, 0., -10 * cm));
+    b_particleGun->SetParticlePosition(G4ThreeVector(0, 0., +9 * cm));
 }
 
 

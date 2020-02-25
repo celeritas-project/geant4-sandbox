@@ -20,14 +20,19 @@
 #include "globals.hh"
 
 
+class PrimaryGeneratorAction;
+class RunAction;
+
 class EventAction : public G4UserEventAction
 {
 public:
     G4int d_eventID;
     G4double d_trackEnergy;
     G4double d_trackLength;
-    
-    EventAction();
+    PrimaryGeneratorAction* b_primary;
+    RunAction* b_runAction;
+
+    EventAction(PrimaryGeneratorAction* primGenAct, RunAction* run);
     virtual ~EventAction();
     
     virtual void  BeginOfEventAction(const G4Event* event);

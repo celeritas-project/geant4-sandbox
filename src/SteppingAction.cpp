@@ -50,15 +50,15 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     
     b_EventAction->AddStep(Eloss, stepLength);
     
-    b_RunAction->FillRunData(eventID,
-                             trackID,
-                             parentID,
-                             PDG,
-                             Eloss,
-                             stepLength,
-                             worldPosition,
-                             momentum,
-                             globalTime);
+    b_RunAction->FillRunStepData(eventID,
+                                 trackID,
+                                 parentID,
+                                 PDG,
+                                 Eloss,
+                                 stepLength,
+                                 worldPosition,
+                                 momentum,
+                                 globalTime);
 }
 
 
@@ -70,6 +70,7 @@ void SteppingAction::FillStepNtuple(const G4Step *step)
     G4int trackID = step->GetTrack()->GetTrackID();
     G4int PDG = step->GetTrack()->GetParticleDefinition()->GetPDGEncoding();
     G4double Eloss = step->GetTotalEnergyDeposit();
+    G4double length = step->GetStepLength();
     G4double globalTime = step->GetPreStepPoint()->GetGlobalTime();
     G4ThreeVector worldPosition = step->GetPreStepPoint()->GetPosition();
     G4ThreeVector momentum = step->GetPreStepPoint()->GetMomentum();
@@ -95,15 +96,16 @@ void SteppingAction::FillStepNtuple(const G4Step *step)
     analysisManager->FillNtupleSColumn(3,  3, materialName);
     analysisManager->FillNtupleSColumn(3,  4, volName);
     analysisManager->FillNtupleDColumn(3,  5, Eloss);
-    analysisManager->FillNtupleDColumn(3,  6, globalTime);
-    analysisManager->FillNtupleDColumn(3,  7, worldPosition.getX());
-    analysisManager->FillNtupleDColumn(3,  8, worldPosition.getY());
-    analysisManager->FillNtupleDColumn(3,  9, worldPosition.getZ());
-    analysisManager->FillNtupleDColumn(3, 10, momentum.getX());
-    analysisManager->FillNtupleDColumn(3, 11, momentum.getY());
-    analysisManager->FillNtupleDColumn(3, 12, momentum.getZ());
-    analysisManager->FillNtupleIColumn(3, 13, processStatus);
-    analysisManager->FillNtupleSColumn(3, 14, processName);
+    analysisManager->FillNtupleDColumn(3,  6, length);
+    analysisManager->FillNtupleDColumn(3,  7, globalTime);
+    analysisManager->FillNtupleDColumn(3,  8, worldPosition.getX());
+    analysisManager->FillNtupleDColumn(3,  9, worldPosition.getY());
+    analysisManager->FillNtupleDColumn(3, 10, worldPosition.getZ());
+    analysisManager->FillNtupleDColumn(3, 11, momentum.getX());
+    analysisManager->FillNtupleDColumn(3, 12, momentum.getY());
+    analysisManager->FillNtupleDColumn(3, 13, momentum.getZ());
+    analysisManager->FillNtupleIColumn(3, 14, processStatus);
+    analysisManager->FillNtupleSColumn(3, 15, processName);
 
     analysisManager->AddNtupleRow(3);
 }

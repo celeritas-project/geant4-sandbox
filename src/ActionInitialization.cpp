@@ -41,7 +41,7 @@ void ActionInitialization::Build() const
 {
     auto primaryGenAction = new PrimaryGeneratorAction();
     auto runAction = new RunAction(primaryGenAction);
-    auto eventAction = new EventAction();
+    auto eventAction = new EventAction(primaryGenAction, runAction);
     auto steppingAction = new SteppingAction(eventAction, runAction);
     
     SetUserAction(primaryGenAction);

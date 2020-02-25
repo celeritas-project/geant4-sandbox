@@ -14,12 +14,12 @@
 
 // C++
 #include <vector>
-#include "Analysis.hh"
 
 // Geant4
 #include "G4UserRunAction.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
+#include "Analysis.hh"
 
 
 class G4Run;
@@ -36,21 +36,27 @@ public:
     virtual void BeginOfRunAction(const G4Run*);
     virtual void EndOfRunAction(const G4Run* run);
     
-    virtual void FillRunData(G4int &eventID,
-                             G4int &trackID,
-                             G4int &parentID,
-                             G4int &pdg,
-                             G4double &Eloss,
-                             G4double &stepLen,
-                             G4ThreeVector &stepPosition,
-                             G4ThreeVector &stepMomentum,
-                             G4double &globalTime);
+    virtual void FillRunStepData(G4int &eventID,
+                                 G4int &trackID,
+                                 G4int &parentID,
+                                 G4int &pdg,
+                                 G4double &Eloss,
+                                 G4double &stepLen,
+                                 G4ThreeVector &stepPosition,
+                                 G4ThreeVector &stepMomentum,
+                                 G4double &globalTime);
+    
+    virtual void FillRunEventData(G4double &primaryE,
+                                  G4ThreeVector &primaryDir);
     
 private:
     PrimaryGeneratorAction* b_primary;
     
     // Event
+    std::vector<G4double> d_vec_primaryE;
+    std::vector<G4ThreeVector> d_vec_primaryDir;
     std::vector<G4int> d_vec_trkIDlist;
+
     
     // Track
     std::vector<G4double> d_vec_trkStepX;

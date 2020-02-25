@@ -11,6 +11,7 @@
 // Project
 #include "EventAction.hh"
 #include "RunAction.hh"
+#include "PrimaryGeneratorAction.hh"
 #include "Analysis.hh"
 
 // Geant4
@@ -27,12 +28,42 @@ void EventAction::BeginOfEventAction(const G4Event * event)
     d_eventID = event->GetEventID();
     d_trackEnergy = 0;
     d_trackLength = 0;
+    
+    // Randomizing particle direction
+    G4int sign[3];
+    
+    for (int i = 0; i < 3; i++)
+    {
+        if (G4UniformRand() > 0.5)
+        {
+            sign[i] = 1;
+        }
+        else
+        {
+            sign[i] = -1;
+        }
+    }
+        
+    G4ThreeVector direction(sign[0] * G4UniformRand(),
+                            sign[1] * G4UniformRand(),
+                            sign[2] * G4UniformRand());
+    
+    b_primary->GetParticleGun()->SetParticleMomentumDirection(direction);
+    G4double primaryE = b_primary->GetParticleGun()->GetParticleEnergy();
+    
+    G4cout  << direction.getX()
+    << ", " << direction.getY()
+    << ", " << direction.getZ()
+    << G4endl;
+
+    b_runAction->FillRunEventData(primaryE, direction);
 }
 
 
 //------------------------------- EventAction -------------------------------//
-EventAction::EventAction()
-: G4UserEventAction(), d_trackEnergy(0.), d_trackLength(0.)
+EventAction::EventAction(PrimaryGeneratorAction* primGenAct, RunAction* run)
+: G4UserEventAction(), d_trackEnergy(0.), d_trackLength(0.),
+b_primary(primGenAct), b_runAction(run)
 {}
 
 

@@ -73,16 +73,16 @@ void RunAction::CreateRootFile(G4String rootFileName)
 }
 
 
-//------------------------------ FillRunData --------------------------------//
-void RunAction::FillRunData(G4int &eventID,
-                            G4int &trackID,
-                            G4int &parentID,
-                            G4int &pdg,
-                            G4double &Eloss,
-                            G4double &stepLen,
-                            G4ThreeVector &stepPosition,
-                            G4ThreeVector &stepMomentum,
-                            G4double &globalTime)
+//---------------------------- FillRunStepData ------------------------------//
+void RunAction::FillRunStepData(G4int &eventID,
+                                G4int &trackID,
+                                G4int &parentID,
+                                G4int &pdg,
+                                G4double &Eloss,
+                                G4double &stepLen,
+                                G4ThreeVector &stepPosition,
+                                G4ThreeVector &stepMomentum,
+                                G4double &globalTime)
 {
     this->d_vec_eventID.push_back(eventID);
     this->d_vec_trackID.push_back(trackID);
@@ -93,6 +93,15 @@ void RunAction::FillRunData(G4int &eventID,
     this->d_vec_stepPosition.push_back(stepPosition);
     this->d_vec_stepMomentum.push_back(stepMomentum);
     this->d_vec_stepGTime.push_back(globalTime);
+}
+
+
+//---------------------------- FillRunEventData -----------------------------//
+void RunAction::FillRunEventData(G4double &primaryE,
+                                 G4ThreeVector &primaryDir)
+{
+    this->d_vec_primaryE.push_back(primaryE);
+    this->d_vec_primaryDir.push_back(primaryDir);
 }
 
 
@@ -115,18 +124,18 @@ void RunAction::CreateRootNtuples()
     analysisManager->CreateNtupleIColumn("nEvents");         // | columnID = 0
     analysisManager->CreateNtupleSColumn("primaryName");     // | columnID = 1
     analysisManager->CreateNtupleIColumn("primaryPDG");      // | columnID = 2
-    analysisManager->CreateNtupleDColumn("primaryE");        // | columnID = 3
-    analysisManager->CreateNtupleDColumn("primaryP");        // | columnID = 4
-    analysisManager->CreateNtupleDColumn("primaryDirX");     // | columnID = 5
-    analysisManager->CreateNtupleDColumn("primaryDirY");     // | columnID = 6
-    analysisManager->CreateNtupleDColumn("primaryDirZ");     // | columnID = 7
     
     // -- event
     analysisManager->CreateNtuple("event", "truth");         // ntupleID = 1
     analysisManager->CreateNtupleIColumn("evtID");           // | columnID = 0
-    analysisManager->CreateNtupleIColumn("nTracks");         // | columnID = 1
+    analysisManager->CreateNtupleDColumn("primaryE");        // | columnID = 1
+    analysisManager->CreateNtupleDColumn("primaryP");        // | columnID = 2
+    analysisManager->CreateNtupleDColumn("primaryDirX");     // | columnID = 3
+    analysisManager->CreateNtupleDColumn("primaryDirY");     // | columnID = 4
+    analysisManager->CreateNtupleDColumn("primaryDirZ");     // | columnID = 5
+    analysisManager->CreateNtupleIColumn("nTracks");         // | columnID = 6
     analysisManager->CreateNtupleIColumn("trkIDlist",        // |
-                                         d_vec_trkIDlist);   // | columnID = 2
+                                         d_vec_trkIDlist);   // | columnID = 7
     
     // -- track
     analysisManager->CreateNtuple("track", "truth");         // ntupleID = 2
@@ -162,30 +171,34 @@ void RunAction::CreateRootNtuples()
     analysisManager->CreateNtupleSColumn("stepMaterial");    // | columnID = 3
     analysisManager->CreateNtupleSColumn("stepVolume");      // | columnID = 4
     analysisManager->CreateNtupleDColumn("stepEloss");       // | columnID = 5
-    analysisManager->CreateNtupleDColumn("stepGlobalTime");  // | columnID = 6
-    analysisManager->CreateNtupleDColumn("stepX");           // | columnID = 7
-    analysisManager->CreateNtupleDColumn("stepY");           // | columnID = 8
-    analysisManager->CreateNtupleDColumn("stepZ");           // | columnID = 9
-    analysisManager->CreateNtupleDColumn("stepPx");          // | columnID = 10
-    analysisManager->CreateNtupleDColumn("stepPy");          // | columnID = 11
-    analysisManager->CreateNtupleDColumn("stepPz");          // | columnID = 12
-    analysisManager->CreateNtupleIColumn("stepStatus");      // | columnID = 13
-    analysisManager->CreateNtupleSColumn("stepProcessName"); // | columnID = 14
+    analysisManager->CreateNtupleDColumn("stepLength");      // | columnID = 6
+    analysisManager->CreateNtupleDColumn("stepGlobalTime");  // | columnID = 7
+    analysisManager->CreateNtupleDColumn("stepX");           // | columnID = 8
+    analysisManager->CreateNtupleDColumn("stepY");           // | columnID = 9
+    analysisManager->CreateNtupleDColumn("stepZ");           // | columnID = 10
+    analysisManager->CreateNtupleDColumn("stepPx");          // | columnID = 11
+    analysisManager->CreateNtupleDColumn("stepPy");          // | columnID = 12
+    analysisManager->CreateNtupleDColumn("stepPz");          // | columnID = 13
+    analysisManager->CreateNtupleIColumn("stepStatus");      // | columnID = 14
+    analysisManager->CreateNtupleSColumn("stepProcessName"); // | columnID = 15
 
-    //---------------------------------------------------------------//
+    //***********************************************************************//
     // The step status enum is defined in G4StepStatus.hh:
     // (geant4-src/source/track/include/G4StepStatus.hh)
     //
-    // 0: Step reached the world boundary.
-    // 1: Step defined by a geometry boundary.
-    // 2: Step defined by a PreStepDoItVector.
-    // 3: Step defined by a AlongStepDoItVector.
-    // 4: Step defined by a PostStepDoItVector.
-    // 5: Step defined by the user Step limit in the logical volume.
-    // 6: Step defined by an exclusively forced PostStepDoIt process.
-    // 7: Step not defined yet.
-    //---------------------------------------------------------------//
-    
+    // Status   Definition
+    // --------------------------------------------------------------------
+    //    0     Step reached the world boundary.
+    //    1     Step defined by a geometry boundary.
+    //    2     Step defined by a PreStepDoItVector.
+    //    3     Step defined by a AlongStepDoItVector.
+    //    4     Step defined by a PostStepDoItVector.
+    //    5     Step defined by the user Step limit in the logical volume.
+    //    6     Step defined by an exclusively forced PostStepDoIt process.
+    //    7     Step not defined yet.
+    // --------------------------------------------------------------------
+    //***********************************************************************//
+
     // Finishing
     analysisManager->FinishNtuple();
 }
@@ -199,18 +212,16 @@ void RunAction::FillEventNtuple()
     
     // Clearing the vector
     d_vec_trkIDlist.clear();
-    
+        
     // Looping over entries to separate event-like data
     G4int numberOfEntries = d_vec_eventID.size();
     
     G4int ntracks = 0;
     G4int thisTrackID = d_vec_trackID.at(0);
-    G4int previousTrackID = thisTrackID;
+    G4int previousTrackID = -1;
     G4int thisEventID = d_vec_eventID.at(0);
     G4int previousEventID = thisEventID;
     
-    // For (i == 0) in the loop
-    d_vec_trkIDlist.push_back(thisTrackID);
     
     for (int i = 0; i < numberOfEntries; i++)
     {
@@ -232,9 +243,17 @@ void RunAction::FillEventNtuple()
             {
                 // Filling ntuple: event
                 ntracks = d_vec_trkIDlist.size();
+                G4double primaryE = d_vec_primaryE.at(previousEventID);
+                G4ThreeVector primaryDir =
+                d_vec_primaryDir.at(previousEventID);
                 
                 analysisManager->FillNtupleIColumn(1, 0, previousEventID);
-                analysisManager->FillNtupleIColumn(1, 1, ntracks);
+                analysisManager->FillNtupleDColumn(1, 1, primaryE);
+                analysisManager->FillNtupleDColumn(1, 2, 0);
+                analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
+                analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
+                analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
+                analysisManager->FillNtupleIColumn(1, 6, ntracks);
                 analysisManager->AddNtupleRow(1);
             }
         }
@@ -245,11 +264,18 @@ void RunAction::FillEventNtuple()
             // If eventID changes, previous event needs to be recorded...
             // Filling ntuple: event
             ntracks = d_vec_trkIDlist.size();
+            G4double primaryE = d_vec_primaryE.at(previousEventID);
+            G4ThreeVector primaryDir = d_vec_primaryDir.at(previousEventID);
             
             analysisManager->FillNtupleIColumn(1, 0, previousEventID);
-            analysisManager->FillNtupleIColumn(1, 1, ntracks);
+            analysisManager->FillNtupleDColumn(1, 1, primaryE);
+            analysisManager->FillNtupleDColumn(1, 2, 0);
+            analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
+            analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
+            analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
+            analysisManager->FillNtupleIColumn(1, 6, ntracks);
             analysisManager->AddNtupleRow(1);
-            
+                        
             // ... event data needs to be reset...
             d_vec_trkIDlist.clear();
             
@@ -258,6 +284,25 @@ void RunAction::FillEventNtuple()
             
             // ... and need to make sure we can re-enter first if statement
             previousEventID = thisEventID;
+            previousTrackID = thisTrackID;
+            
+            // If the new event found is also the last entry, it is a last
+            // single track event that needs to be recorded as well
+            if (i == numberOfEntries - 1)
+            {
+                ntracks = d_vec_trkIDlist.size();
+                primaryE = d_vec_primaryE.at(previousEventID);
+                primaryDir = d_vec_primaryDir.at(previousEventID);
+                
+                analysisManager->FillNtupleIColumn(1, 0, previousEventID);
+                analysisManager->FillNtupleDColumn(1, 1, primaryE);
+                analysisManager->FillNtupleDColumn(1, 2, 0);
+                analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
+                analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
+                analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
+                analysisManager->FillNtupleIColumn(1, 6, ntracks);
+                analysisManager->AddNtupleRow(1);
+            }
         }
     }
 }
@@ -278,7 +323,7 @@ void RunAction::FillTrackNtuple()
     d_vec_trkStepPz.clear();
     d_vec_trkStepGTime.clear();
     
-    // Separating data withing different tracks
+    // Separating step data withing different events and tracks
     G4int numberOfEntries = d_vec_trackID.size();
     
     G4int thisTrackID = d_vec_trackID.at(0);
@@ -291,7 +336,6 @@ void RunAction::FillTrackNtuple()
     G4double trackEloss = 0;
     G4double trackLen = 0;
     
-    
     for (int i = 0; i < numberOfEntries; i++)
     {
         thisTrackID = d_vec_trackID.at(i);
@@ -300,22 +344,54 @@ void RunAction::FillTrackNtuple()
         // Case step data is still from the same eventID
         if (thisEventID == previousEventID)
         {
-            // If step is also from the same track, fill data in
-            if (thisTrackID == previousTrackID)
+            // If step is from a new track
+            if (thisTrackID != previousTrackID)
             {
-                trackParentID = d_vec_parentID.at(i);
-                trackPDG = d_vec_pdg.at(i);
-                trackEloss += d_vec_stepEloss.at(i);
-                trackLen += d_vec_stepLen.at(i);
-                d_vec_trkStepX.push_back(d_vec_stepPosition.at(i).getX());
-                d_vec_trkStepY.push_back(d_vec_stepPosition.at(i).getY());
-                d_vec_trkStepZ.push_back(d_vec_stepPosition.at(i).getZ());
-                d_vec_trkStepPx.push_back(d_vec_stepMomentum.at(i).getX());
-                d_vec_trkStepPy.push_back(d_vec_stepMomentum.at(i).getY());
-                d_vec_trkStepPz.push_back(d_vec_stepMomentum.at(i).getZ());
-                d_vec_trkStepGTime.push_back(d_vec_stepGTime.at(i));
+                // We need to fill in the ntuple...
+                G4double trackVtxX = d_vec_trkStepX.at(0);
+                G4double trackVtxY = d_vec_trkStepY.at(0);
+                G4double trackVtxZ = d_vec_trkStepX.at(0);
+                
+                analysisManager->FillNtupleIColumn(2, 0, previousEventID);
+                analysisManager->FillNtupleIColumn(2, 1, previousTrackID);
+                analysisManager->FillNtupleIColumn(2, 2, trackParentID);
+                analysisManager->FillNtupleIColumn(2, 3, trackPDG);
+                analysisManager->FillNtupleDColumn(2, 4, trackEloss);
+                analysisManager->FillNtupleDColumn(2, 5, trackLen);
+                analysisManager->FillNtupleDColumn(2, 6, trackVtxX);
+                analysisManager->FillNtupleDColumn(2, 7, trackVtxY);
+                analysisManager->FillNtupleDColumn(2, 8, trackVtxZ);
+                
+                analysisManager->AddNtupleRow(2);
+                
+                // ... and we need to reset the track data
+                trackEloss = 0;
+                trackLen = 0;
+                d_vec_trkStepX.clear();
+                d_vec_trkStepY.clear();
+                d_vec_trkStepZ.clear();
+                d_vec_trkStepPx.clear();
+                d_vec_trkStepPy.clear();
+                d_vec_trkStepPz.clear();
+                d_vec_trkStepGTime.clear();
+                
+                previousTrackID = thisTrackID;
             }
             
+            // Collecting track data
+            trackParentID = d_vec_parentID.at(i);
+            trackPDG = d_vec_pdg.at(i);
+            trackEloss += d_vec_stepEloss.at(i);
+            trackLen += d_vec_stepLen.at(i);
+            d_vec_trkStepX.push_back(d_vec_stepPosition.at(i).getX());
+            d_vec_trkStepY.push_back(d_vec_stepPosition.at(i).getY());
+            d_vec_trkStepZ.push_back(d_vec_stepPosition.at(i).getZ());
+            d_vec_trkStepPx.push_back(d_vec_stepMomentum.at(i).getX());
+            d_vec_trkStepPy.push_back(d_vec_stepMomentum.at(i).getY());
+            d_vec_trkStepPz.push_back(d_vec_stepMomentum.at(i).getZ());
+            d_vec_trkStepGTime.push_back(d_vec_stepGTime.at(i));
+            
+
             // Covering the extreme case of a run with only one event
             if (i == numberOfEntries - 1)
             {
@@ -385,6 +461,27 @@ void RunAction::FillTrackNtuple()
             // ... and need to make sure we can re-enter first if statement
             previousTrackID = thisTrackID;
             previousEventID = thisEventID;
+            
+            // If the new event found is also the last entry, it is a last
+            // single track event that needs to be recorded as well
+            if (i == numberOfEntries - 1)
+            {
+                trackVtxX = d_vec_trkStepX.at(0);
+                trackVtxY = d_vec_trkStepY.at(0);
+                trackVtxZ = d_vec_trkStepX.at(0);
+                
+                analysisManager->FillNtupleIColumn(2, 0, previousEventID);
+                analysisManager->FillNtupleIColumn(2, 1, previousTrackID);
+                analysisManager->FillNtupleIColumn(2, 2, trackParentID);
+                analysisManager->FillNtupleIColumn(2, 3, trackPDG);
+                analysisManager->FillNtupleDColumn(2, 4, trackEloss);
+                analysisManager->FillNtupleDColumn(2, 5, trackLen);
+                analysisManager->FillNtupleDColumn(2, 6, trackVtxX);
+                analysisManager->FillNtupleDColumn(2, 7, trackVtxY);
+                analysisManager->FillNtupleDColumn(2, 8, trackVtxZ);
+                
+                analysisManager->AddNtupleRow(2);
+            }
         }
     }
 }
@@ -397,26 +494,16 @@ void RunAction::FillRunNtuple(const G4Run* run)
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
     
     // Filling ntuple: run
+    G4int numberOfEvents = run->GetNumberOfEvent();
     G4String primaryName =
     b_primary->GetParticleGun()->GetParticleDefinition()->GetParticleName();
     G4int primaryPDG =
     b_primary->GetParticleGun()->GetParticleDefinition()->GetPDGEncoding();
-    G4double primaryE = b_primary->GetParticleGun()->GetParticleEnergy();
-    G4int numberOfEvents = run->GetNumberOfEvent();
-    G4double primaryP = b_primary->GetParticleGun()->GetParticleMomentum();
-    G4ParticleMomentum primaryDir =
-    b_primary->GetParticleGun()->GetParticleMomentumDirection();
-    
-    
+        
     // Filling in the data
     analysisManager->FillNtupleIColumn(0, 0, numberOfEvents);
     analysisManager->FillNtupleSColumn(0, 1, primaryName);
     analysisManager->FillNtupleIColumn(0, 2, primaryPDG);
-    analysisManager->FillNtupleDColumn(0, 3, primaryE);
-    analysisManager->FillNtupleDColumn(0, 4, primaryP);
-    analysisManager->FillNtupleDColumn(0, 5, primaryDir.getX());
-    analysisManager->FillNtupleDColumn(0, 6, primaryDir.getY());
-    analysisManager->FillNtupleDColumn(0, 7, primaryDir.getZ());
     
     analysisManager->AddNtupleRow(0);
 }
