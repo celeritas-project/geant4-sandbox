@@ -3,15 +3,16 @@ README
 ======
 
 
-About:
-------
+
+# About:
 
 Sandbox for running and testing Geant4. It loads a gdml input file, runs events
 using the particle gun, and produces a ROOT output file.
 
 
-Dependencies:
--------------
+
+# Dependencies:
+
 
 * Geant4 compiled with
   * Qt
@@ -20,8 +21,8 @@ Dependencies:
 * ROOT
 
 
-How to install:
----------------
+
+# How to install:
 
 From the sandbox folder:
 
@@ -33,16 +34,15 @@ $ make
 ```
 
 
-How to run:
------------
+# How to run:
 
 From the build folder:
 
 ```
-$ ./main [options] [input.gdml]
+$ ./g4-sandbox [options] [input.gdml]
 ```
 
-Options:
+## Options:
 
 * `-v`: Opens the Qt GUI.
 * `-n N`: Runs N events.  
@@ -52,25 +52,26 @@ Options:
   * `phys`: Full list of physics constructors.   
 * `-o`: Checks for overlaps.
 
-Examples:  
+## Examples:  
 
 `$ ./main -p aux input.gdml`: Opens the gdml, prints auxiliary information.  
 `$ ./main -v -o -n 100 input.gdml`: Opens the gdml, checks for overlaps, runs 100 events, and opens the GUI. Upon closing the GUI, the ROOT file is saved to disk.  
 `$ ./main -n 100 -f out.root input.gdml`: Opens the gdml, runs 100 events, saves the ROOT file to disk as "out.root".
 
 
-Notes / Issues
---------------
+
+# Notes / Issues
 
 Currently, trying to view simulated events in the cms2018.gdml geometry using `-v` takes an
 unsurmountable amount of time. Running events with the GUI is only fine for small geometries.
 
 
-Extra files:
-------------
+
+# Extra files:
 
 * slabsGeometry.gdml: Basic geometry composed by 4 slabs of stainless steel.
 * cms2018.gdml: self-explanatory.
+
 
 ___
 **Stefano Tognini**  
