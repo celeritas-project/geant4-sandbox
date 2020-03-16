@@ -24,6 +24,9 @@
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
     CreateRootFile(rootFile);
+    
+    // Randomizing the seed by using the clock time
+    CLHEP::HepRandom::setTheSeed(time(0));
 }
 
 
@@ -197,8 +200,8 @@ void RunAction::CreateRootNtuples()
     // The step status enum is defined in G4StepStatus.hh:
     // (geant4-src/source/track/include/G4StepStatus.hh)
     //
-    // Status   Definition
-    // --------------------------------------------------------------------
+    //  Status  Definition
+    // ---------------------------------------------------------------------
     //    0     Step reached the world boundary.
     //    1     Step defined by a geometry boundary.
     //    2     Step defined by a PreStepDoItVector.
@@ -207,7 +210,7 @@ void RunAction::CreateRootNtuples()
     //    5     Step defined by the user Step limit in the logical volume.
     //    6     Step defined by an exclusively forced PostStepDoIt process.
     //    7     Step not defined yet.
-    // --------------------------------------------------------------------
+    // ---------------------------------------------------------------------
     //***********************************************************************//
 
     // Finishing

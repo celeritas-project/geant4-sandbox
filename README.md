@@ -59,6 +59,13 @@ Examples:
 `$ ./main -n 100 -f out.root input.gdml`: Opens the gdml, runs 100 events, saves the ROOT file to disk as "out.root".
 
 
+Notes / Issues
+--------------
+
+Currently, trying to view simulated events in the cms2018.gdml geometry using `-v` takes an
+unsurmountable amount of time. Running events with the GUI is only fine for small geometries.
+
+
 Extra files:
 ------------
 

@@ -26,7 +26,6 @@ class G4Run;
 class PrimaryGeneratorAction;
 class EventAction;
 
-
 class RunAction : public G4UserRunAction
 {
 public:

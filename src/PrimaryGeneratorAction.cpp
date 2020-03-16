@@ -32,7 +32,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     // Defining a standard particle ID, direction, energy, and position
     // WARNING: Values may be overwritten by EventAction::BeginOfEventAction
     G4ParticleDefinition* particle;
-    particle = G4ParticleTable::GetParticleTable()->FindParticle("mu-");
+    particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
     
     b_particleGun->SetParticleDefinition(particle);
     b_particleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));

@@ -52,42 +52,42 @@ int main(int argc, char** argv)
     
     for (int i = 1; i < argc; i++)
     {
-        /// Flag for enabling the GUI
+        // Flag for enabling the GUI
         if (G4String(argv[i]) == "-v")
         {
             isGUIEnable = true;
         }
         
-        /// Flag for running a user-specified number of events
+        // Flag for running a user-specified number of events
         if (G4String(argv[i]) == "-n")
         {
             isBeamOn = true;
             numberOfEvents = std::stoi(G4String(argv[i+1]), nullptr, 0);
         }
         
-        /// Flag for printing information
+        // Flag for printing information
         if (G4String(argv[i]) == "-p")
         {
-            /// Auxiliary information
+            // Auxiliary information
             if (G4String(argv[i+1]) == "aux")
             {
                 isPrintAux = true;
             }
             
-            /// Physics constructor list
+            // Physics constructor list
             if (G4String(argv[i+1]) == "phys")
             {
                 isPrintPhysics = true;
             }
         }
         
-        /// Flag for checking for overlaps in the geometry
+        // Flag for checking for overlaps in the geometry
         if (G4String(argv[i]) == "-o")
         {
             isOverlapCheck = true;
         }
         
-        /// Flag for custom ROOT filename
+        // Flag for custom ROOT filename
         if (G4String(argv[i]) == "-f")
         {
             isCustomRootFile = true;
@@ -160,7 +160,7 @@ int main(int argc, char** argv)
     //
     // - PrimaryGeneratorAction: Sets up the particle gun.
     // - RunAction: Opens ROOT file, creates ntuples, histos at the beginning
-    //             of run, and writes/closes ROOT file at the end.
+    //              of run, and writes/closes ROOT file at the end.
     // - EventAction: Records event-like data into the ntuples.
     // - SteppingAction: Records particle-step-like data into the ntuples.
 

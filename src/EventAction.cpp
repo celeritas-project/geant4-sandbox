@@ -72,10 +72,7 @@ G4int EventAction::GetEventID()
 
 //-------------------------- RandomUnitaryThreeVector -----------------------//
 G4ThreeVector EventAction::RandomUnitaryThreeVector()
-{
-    // Randomizing the seed by using the clock time
-    CLHEP::HepRandom::setTheSeed(time(0));
-    
+{      
     G4int sign[3];
     for (int i = 0; i < 3; i++)
     {
