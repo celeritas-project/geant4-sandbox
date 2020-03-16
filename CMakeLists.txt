@@ -45,7 +45,7 @@ endif()
 #------------------------------------------------------------------------------
 # Adding the executable, and linking it to all libraries
 #------------------------------------------------------------------------------
-add_executable(g4-sandbox main.cpp ${sources})
+add_executable(g4-sandbox main.cpp ${sources} ${headers})
 
 include_directories(${PROJECT_SOURCE_DIR}/include
                     ${Geant4_INCLUDE_DIR})
