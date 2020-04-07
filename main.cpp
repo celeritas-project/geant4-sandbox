@@ -11,6 +11,7 @@
 // Project
 #include "DetectorConstruction.hh"
 #include "ActionInitialization.hh"
+#include "PythiaGenerator.hh"
 #include "PrintInfo.hh"
 
 // Geant4
@@ -48,6 +49,11 @@ int main(int argc, char** argv)
     bool isOverlapCheck = false;
     bool isCustomRootFile = false;
     G4String rootFile;
+    bool isPythiaGenOn = false;
+    G4String pythiaGenInput;
+    G4String pythiaGenOutput;
+    bool isPythiaHepevtInput = false;
+    G4String pythiaHepevtInput;
     int numberOfEvents = 1;
     
     for (int i = 1; i < argc; i++)
@@ -92,6 +98,21 @@ int main(int argc, char** argv)
         {
             isCustomRootFile = true;
             rootFile = argv[i+1];
+        }
+        
+        // Flag for Pythia generator
+        if (G4String(argv[i]) == "-gen")
+        {
+            isPythiaGenOn = true;
+            pythiaGenInput = argv[i+1];
+            pythiaGenOutput = argv[i+2];
+        }
+        
+        // Flag for Pythia hepevt input
+        if (G4String(argv[i]) == "-i")
+        {
+            isPythiaHepevtInput = true;
+            pythiaHepevtInput = argv[i+1];
         }
     }
     
@@ -147,36 +168,46 @@ int main(int argc, char** argv)
     G4VModularPhysicsList* physicsList =
     new G4GenericPhysicsList(physicsConstructor);
     
-    // For a full Physics List, use this pointer instead
+    // For a full Physics List, use the following pointer instead
     //G4VModularPhysicsList* physicsList = new FTFP_BERT;
 
     // Initializing the Physics List
     runManager->SetUserInitialization(physicsList);
     
     
+    //--------------------------- PythiaGenerator ---------------------------//
+    if (isPythiaGenOn)
+    {
+        PythiaGenerator pythia;
+        
+        pythia.SelectInput(pythiaGenInput);
+        pythia.SetOutputName(pythiaGenOutput);
+        pythia.Run();
+    }
+    
     //------------------------ Action Initialization ------------------------//
     // The ActionInitialization class is responsible for calling all the
     // remaining classes:
     //
     // - PrimaryGeneratorAction: Sets up the particle gun.
-    // - RunAction: Opens ROOT file, creates ntuples, histos at the beginning
-    //              of run, and writes/closes ROOT file at the end.
+    // - RunAction: Opens ROOT file, creates ntuples at the beginning of the
+    //   run, and writes/closes the ROOT file at the end.
     // - EventAction: Records event-like data into the ntuples.
     // - SteppingAction: Records particle-step-like data into the ntuples.
 
-    ActionInitialization* actionInitialization;
+    ActionInitialization* actionInitialization = new ActionInitialization();
     
     if (isCustomRootFile)
     {
-        actionInitialization = new ActionInitialization(rootFile);
+        actionInitialization->SetRootOutputFile(rootFile);
     }
-    else
+    if (isPythiaHepevtInput)
     {
-        actionInitialization = new ActionInitialization();
+        actionInitialization->SetPythiaInputFile(pythiaHepevtInput);
     }
     
     runManager->SetUserInitialization(actionInitialization);
-    
+
     
     //----------------------------- UI Manager ------------------------------//
     auto UImanager = G4UImanager::GetUIpointer();
@@ -229,7 +260,7 @@ int main(int argc, char** argv)
             runManager->BeamOn(numberOfEvents);
         }
     }
-        
+    
     
     //---------------------------- Job termination --------------------------//
     // User actions, physics list, and detector construction are owned and

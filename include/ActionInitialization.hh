@@ -21,8 +21,12 @@ class DetectorConstruction;
 class ActionInitialization : public G4VUserActionInitialization
 {
 public:
+    G4String rootOutputFile;
+    G4String pythiaInputFile;
+    bool isCustomRootFile;
+    bool isPythiaInput;
+    
     ActionInitialization();
-    ActionInitialization(G4String rootFile);
     virtual ~ActionInitialization();
     
     virtual void Build() const;
@@ -30,9 +34,9 @@ public:
     // In case of multithread
     virtual void BuildForMaster() const;
     
-private:
-    G4String rootFile;
-    bool isCustomRootFile;
+    void IsPythiaHepevtInput(bool &isPythia);
+    void SetRootOutputFile(G4String rootOutputFile);
+    void SetPythiaInputFile(G4String pythiaInputFile);
 };
 
 

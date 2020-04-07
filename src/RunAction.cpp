@@ -24,9 +24,9 @@
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
     CreateRootFile(rootFile);
-    
+        
     // Randomizing the seed by using the clock time
-    CLHEP::HepRandom::setTheSeed(time(0));
+    //CLHEP::HepRandom::setTheSeed(time(0));
 }
 
 
@@ -65,7 +65,7 @@ RunAction::~RunAction()
 //------------------------------ EndOfRunAction -----------------------------//
 void RunAction::EndOfRunAction(const G4Run* run)
 {
-    FillRunNtuple(run);
+    //FillRunNtuple(run);
     
     FillEventNtuple();
     
@@ -236,7 +236,6 @@ void RunAction::FillEventNtuple()
     G4int thisEventID = d_vec_eventID.at(0);
     G4int previousEventID = thisEventID;
     
-    
     for (int i = 0; i < numberOfEntries; i++)
     {
         thisEventID = d_vec_eventID.at(i);
@@ -260,7 +259,8 @@ void RunAction::FillEventNtuple()
                 G4double primaryE = d_vec_primaryE.at(previousEventID);
                 G4ThreeVector primaryDir =
                 d_vec_primaryDir.at(previousEventID);
-                G4double primaryP = CalculatePrimaryMomentum();
+                //G4double primaryP = CalculatePrimaryMomentum();
+                G4double primaryP = 0;
 
                 analysisManager->FillNtupleIColumn(1, 0, previousEventID);
                 analysisManager->FillNtupleDColumn(1, 1, primaryE);
@@ -281,8 +281,9 @@ void RunAction::FillEventNtuple()
             ntracks = d_vec_trkIDlist.size();
             G4double primaryE = d_vec_primaryE.at(previousEventID);
             G4ThreeVector primaryDir = d_vec_primaryDir.at(previousEventID);
-            G4double primaryP = CalculatePrimaryMomentum();
-            
+            //G4double primaryP = CalculatePrimaryMomentum();
+            G4double primaryP = 0;
+
             analysisManager->FillNtupleIColumn(1, 0, previousEventID);
             analysisManager->FillNtupleDColumn(1, 1, primaryE);
             analysisManager->FillNtupleDColumn(1, 2, primaryP);

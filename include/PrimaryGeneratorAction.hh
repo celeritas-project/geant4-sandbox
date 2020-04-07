@@ -20,19 +20,27 @@
 
 class G4ParticleGun;
 class G4Event;
+class G4VPrimaryGenerator;
+
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
 public:
-    PrimaryGeneratorAction();    
+    bool isPythiaHepevtInput;
+
+    PrimaryGeneratorAction(bool const &isPythiaHepevtInput,
+                           G4String pythiaInputFile);
+    
     virtual ~PrimaryGeneratorAction();
     
     virtual void GeneratePrimaries(G4Event* event);
     
     G4ParticleGun* GetParticleGun();
-        
+    G4VPrimaryGenerator* GetHepevt();
+    
 private:
     G4ParticleGun*  b_particleGun;
+    G4VPrimaryGenerator* b_hepevt;
 };
 
 
