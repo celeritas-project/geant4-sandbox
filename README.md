@@ -5,8 +5,8 @@ README
 
 # About:
 
-Sandbox for running and testing Geant4. It loads a gdml input file, runs events
-using the particle gun, and produces a ROOT output file.
+Sandbox for running and testing Geant4. It loads a gdml input file, runs a
+simulation, and produces a ROOT output file.
 
 
 # Dependencies:
@@ -16,6 +16,7 @@ using the particle gun, and produces a ROOT output file.
   * OpenGL
   * Xerces
 * ROOT
+* Pythia8
 
 
 # How to install:
@@ -73,6 +74,7 @@ and produces a ROOT output file.
 * **cms2018.gdml**: self-explanatory.
 * **gui_menu.mac**: Adds options to the menu bar of the GUI session.
 * **init.mac**: Macro with initialization commands for the GUI session.
+* **pythiaInput.cmd**: Pythia8 input example, to be used with the `-gen` option.
 * **slabsGeometry.gdml**: Basic geometry composed by 4 slabs of stainless steel.
 * **vis.mac**: Macro for the GUI gdml visualization settings.
 
