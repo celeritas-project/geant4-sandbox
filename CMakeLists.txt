@@ -2,7 +2,7 @@
 #/*!
 # * \file   sandbox/CMakeLists.txt
 # * \author Stefano Tognini
-# * \brief  CMakeLists for the Geant4-sandbox of the Celeritas Project.
+# * \brief  CMakeLists for the Geant4-Sandbox of the Celeritas Project.
 # * \note   Copyright (c) 2020 Oak Ridge National Laboratory, UT-Battelle, LLC.
 # */
 #-----------------------------------------------------------------------------#
@@ -64,7 +64,9 @@ target_link_libraries(g4-sandbox PRIVATE
 #------------------------------------------------------------------------------
 # Copying scripts and gdml files to the build directory
 #------------------------------------------------------------------------------
-set(SCRIPTS init.mac vis.mac gui_menu.mac slabsGeometry.gdml cms2018.gdml)
+set(SCRIPTS
+  init.mac vis.mac gui_menu.mac pythiaInput.cmd slabsGeometry.gdml
+  cms2018.gdml)
 
 foreach(_script ${SCRIPTS})
   configure_file(${PROJECT_SOURCE_DIR}/${_script}

@@ -22,19 +22,10 @@
 
 
 //---------------------------- BeginOfEventAction ---------------------------//
-void EventAction::BeginOfEventAction(const G4Event * event)
+void EventAction::BeginOfEventAction(const G4Event* event)
 {
-    // Pythia8 Hepevt
-    if (b_primary->isPythiaHepevtInput)
-    {
-        // Placeholder. Avoid crashing event ntuple when pythia hepevt is used
-        G4ThreeVector direction = b_primary->GetHepevt()->GetParticlePosition();
-        double primaryE = 0;
-        b_runAction->FillRunEventData(primaryE, direction);
-    }
-    
-    // Particle gun
-    else
+    // Particle gun only
+    if (!b_primary->isPythiaHepevtInput)
     {
         // Initialisation per event
         d_eventID = event->GetEventID();
