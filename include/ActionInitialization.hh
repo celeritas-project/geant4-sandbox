@@ -23,8 +23,8 @@ class ActionInitialization : public G4VUserActionInitialization
 public:
     G4String rootOutputFile;
     G4String pythiaInputFile;
-    bool isCustomRootFile;
-    bool isPythiaInput;
+    bool isCustomRootFile = false;
+    bool isPythiaInput = false;
     
     ActionInitialization();
     virtual ~ActionInitialization();

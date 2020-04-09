@@ -165,11 +165,11 @@ int main(int argc, char** argv)
     //physicsConstructor->push_back("G4HadronPhysicsQGSP_BERT");
     
     // Buiding the Physics List
-    G4VModularPhysicsList* physicsList =
-    new G4GenericPhysicsList(physicsConstructor);
+    //G4VModularPhysicsList* physicsList =
+    //new G4GenericPhysicsList(physicsConstructor);
     
     // For a full Physics List, use the following pointer instead
-    //G4VModularPhysicsList* physicsList = new FTFP_BERT;
+    G4VModularPhysicsList* physicsList = new FTFP_BERT;
 
     // Initializing the Physics List
     runManager->SetUserInitialization(physicsList);

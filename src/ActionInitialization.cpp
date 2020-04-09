@@ -19,8 +19,7 @@
 
 //--------------------------- ActionInitialization --------------------------//
 ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization(), rootOutputFile("rootout.root"),
-isCustomRootFile(false), isPythiaInput(false)
+: G4VUserActionInitialization()
 {}
 
 
@@ -77,6 +76,7 @@ void ActionInitialization::IsPythiaHepevtInput(bool &isPythia)
 void ActionInitialization::SetRootOutputFile(G4String rootOutputFile)
 {
     this->rootOutputFile = rootOutputFile;
+    this->isCustomRootFile = true;
 }
 
 
