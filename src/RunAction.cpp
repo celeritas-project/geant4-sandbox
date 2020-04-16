@@ -42,7 +42,6 @@ RunAction::RunAction(PrimaryGeneratorAction* primGenAct, G4String rootFile)
     G4RunManager::GetRunManager()->SetPrintProgress(1);
     
     ClearStepVectorMembers();
-
     CreateRootNtuples();
 }
 
@@ -54,7 +53,6 @@ RunAction::RunAction(PrimaryGeneratorAction* primGenAct)
     G4RunManager::GetRunManager()->SetPrintProgress(1);
     
     ClearStepVectorMembers();
-
     CreateRootNtuples();
 }
 
@@ -70,11 +68,8 @@ RunAction::~RunAction()
 void RunAction::EndOfRunAction(const G4Run* run)
 {
     FillRunNtuple(run);
-    
     FillEventNtuple();
-    
     FillTrackNtuple();
-    
     FinishRootFile();
 }
 

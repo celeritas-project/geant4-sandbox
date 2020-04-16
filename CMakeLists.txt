@@ -57,7 +57,7 @@ target_include_directories(g4-sandbox PRIVATE
                            ${PYTHIA8_INCLUDE_DIR})
 
 target_link_libraries(g4-sandbox PRIVATE
-		                  ${Geant4_LIBRARIES}
+                      ${Geant4_LIBRARIES}
                       ${PYTHIA8_LIBRARIES})
 
 

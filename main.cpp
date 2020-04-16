@@ -52,8 +52,8 @@ int main(int argc, char** argv)
     bool isPythiaGenOn = false;
     G4String pythiaGenInput;
     G4String pythiaGenOutput;
-    bool isPythiaHepevtInput = false;
-    G4String pythiaHepevtInput;
+    bool isHepevtInput = false;
+    G4String hepevtInput;
     int numberOfEvents = 1;
     
     for (int i = 1; i < argc; i++)
@@ -111,8 +111,8 @@ int main(int argc, char** argv)
         // Flag for Pythia hepevt input
         if (G4String(argv[i]) == "-i")
         {
-            isPythiaHepevtInput = true;
-            pythiaHepevtInput = argv[i+1];
+            isHepevtInput = true;
+            hepevtInput = argv[i+1];
         }
     }
     
@@ -165,11 +165,11 @@ int main(int argc, char** argv)
     //physicsConstructor->push_back("G4HadronPhysicsQGSP_BERT");
     
     // Buiding the Physics List
-    //G4VModularPhysicsList* physicsList =
-    //new G4GenericPhysicsList(physicsConstructor);
+    G4VModularPhysicsList* physicsList =
+    new G4GenericPhysicsList(physicsConstructor);
     
     // For a full Physics List, use the following pointer instead
-    G4VModularPhysicsList* physicsList = new FTFP_BERT;
+    //G4VModularPhysicsList* physicsList = new FTFP_BERT;
 
     // Initializing the Physics List
     runManager->SetUserInitialization(physicsList);
@@ -201,9 +201,9 @@ int main(int argc, char** argv)
     {
         actionInitialization->SetRootOutputFile(rootFile);
     }
-    if (isPythiaHepevtInput)
+    if (isHepevtInput)
     {
-        actionInitialization->SetPythiaInputFile(pythiaHepevtInput);
+        actionInitialization->SetPythiaInputFile(hepevtInput);
     }
     
     runManager->SetUserInitialization(actionInitialization);

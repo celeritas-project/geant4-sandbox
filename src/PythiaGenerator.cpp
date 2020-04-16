@@ -63,8 +63,8 @@ void PythiaGenerator::Run()
     //  status PDG mother1 mother2 daughter2 daughter2 Px Py Pz E m x y z t
     // [  x     x                      x         x     x  x  x    x        ]
     //
-    // The (x, y, z) vertex is not included in the HEPEVT file and is
-    // specified by the PrimaryGeneratorAction::GeneratePrimaries() method.
+    // The (x, y, z) vertex not included in the G4HEPEVT file and is defined
+    // by the PrimaryGeneratorAction::GeneratePrimaries() class method.
     //-----------------------------------------------------------------------//
     
     for (int event_i = 0; event_i < numberOfEvents; event_i++)
