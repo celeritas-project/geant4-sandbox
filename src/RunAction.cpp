@@ -24,9 +24,13 @@
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
     CreateRootFile(rootFile);
-    
-    // Randomizing the seed by using the clock time
-    CLHEP::HepRandom::setTheSeed(time(0));
+        
+    // Particle gun only
+    if (!b_primary->isPythiaHepevtInput)
+    {
+        // Randomizing the seed by using the clock time
+        CLHEP::HepRandom::setTheSeed(time(0));
+    }
 }
 
 
@@ -38,7 +42,6 @@ RunAction::RunAction(PrimaryGeneratorAction* primGenAct, G4String rootFile)
     G4RunManager::GetRunManager()->SetPrintProgress(1);
     
     ClearStepVectorMembers();
-
     CreateRootNtuples();
 }
 
@@ -50,7 +53,6 @@ RunAction::RunAction(PrimaryGeneratorAction* primGenAct)
     G4RunManager::GetRunManager()->SetPrintProgress(1);
     
     ClearStepVectorMembers();
-
     CreateRootNtuples();
 }
 
@@ -66,11 +68,8 @@ RunAction::~RunAction()
 void RunAction::EndOfRunAction(const G4Run* run)
 {
     FillRunNtuple(run);
-    
     FillEventNtuple();
-    
     FillTrackNtuple();
-    
     FinishRootFile();
 }
 
@@ -135,21 +134,35 @@ void RunAction::CreateRootNtuples()
     // -- run
     analysisManager->CreateNtuple("run", "truth");           // ntupleID = 0
     analysisManager->CreateNtupleIColumn("nEvents");         // | columnID = 0
-    analysisManager->CreateNtupleSColumn("primaryName");     // | columnID = 1
-    analysisManager->CreateNtupleIColumn("primaryPDG");      // | columnID = 2
-    analysisManager->CreateNtupleDColumn("primaryMass");     // | columnID = 3
-
+    if (!b_primary->isPythiaHepevtInput)
+    {
+        analysisManager->CreateNtupleSColumn("primaryName"); // | columnID = 1
+        analysisManager->CreateNtupleIColumn("primaryPDG");  // | columnID = 2
+        analysisManager->CreateNtupleDColumn("primaryMass"); // | columnID = 3
+    }
+    
     // -- event
     analysisManager->CreateNtuple("event", "truth");         // ntupleID = 1
-    analysisManager->CreateNtupleIColumn("evtID");           // | columnID = 0
-    analysisManager->CreateNtupleDColumn("primaryEk");       // | columnID = 1
-    analysisManager->CreateNtupleDColumn("primaryP");        // | columnID = 2
-    analysisManager->CreateNtupleDColumn("primaryDirX");     // | columnID = 3
-    analysisManager->CreateNtupleDColumn("primaryDirY");     // | columnID = 4
-    analysisManager->CreateNtupleDColumn("primaryDirZ");     // | columnID = 5
-    analysisManager->CreateNtupleIColumn("nTracks");         // | columnID = 6
-    analysisManager->CreateNtupleIColumn("trkIDlist",        // |
-                                         d_vec_trkIDlist);   // | columnID = 7
+    if (b_primary->isPythiaHepevtInput)
+    {
+        analysisManager->CreateNtupleIColumn("evtID");        // | columnID = 0
+        analysisManager->CreateNtupleIColumn("nTracks");      // | columnID = 1
+        analysisManager->CreateNtupleIColumn("trkIDlist",     // |
+                                             d_vec_trkIDlist);// | columnID = 2
+    }
+    
+    else
+    {
+        analysisManager->CreateNtupleIColumn("evtID");        // | columnID = 0
+        analysisManager->CreateNtupleDColumn("primaryEk");    // | columnID = 1
+        analysisManager->CreateNtupleDColumn("primaryP");     // | columnID = 2
+        analysisManager->CreateNtupleDColumn("primaryDirX");  // | columnID = 3
+        analysisManager->CreateNtupleDColumn("primaryDirY");  // | columnID = 4
+        analysisManager->CreateNtupleDColumn("primaryDirZ");  // | columnID = 5
+        analysisManager->CreateNtupleIColumn("nTracks");      // | columnID = 6
+        analysisManager->CreateNtupleIColumn("trkIDlist",     // |
+                                             d_vec_trkIDlist);// | columnID = 7
+    }
     
     // -- track
     analysisManager->CreateNtuple("track", "truth");         // ntupleID = 2
@@ -236,7 +249,6 @@ void RunAction::FillEventNtuple()
     G4int thisEventID = d_vec_eventID.at(0);
     G4int previousEventID = thisEventID;
     
-    
     for (int i = 0; i < numberOfEntries; i++)
     {
         thisEventID = d_vec_eventID.at(i);
@@ -257,19 +269,32 @@ void RunAction::FillEventNtuple()
             {
                 // Filling ntuple: event
                 ntracks = d_vec_trkIDlist.size();
-                G4double primaryE = d_vec_primaryE.at(previousEventID);
-                G4ThreeVector primaryDir =
-                d_vec_primaryDir.at(previousEventID);
-                G4double primaryP = CalculatePrimaryMomentum();
-
-                analysisManager->FillNtupleIColumn(1, 0, previousEventID);
-                analysisManager->FillNtupleDColumn(1, 1, primaryE);
-                analysisManager->FillNtupleDColumn(1, 2, primaryP);
-                analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
-                analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
-                analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
-                analysisManager->FillNtupleIColumn(1, 6, ntracks);
-                analysisManager->AddNtupleRow(1);
+                if (b_primary->isPythiaHepevtInput)
+                {
+                    analysisManager->FillNtupleIColumn(1, 0, previousEventID);
+                    analysisManager->FillNtupleIColumn(1, 1, ntracks);
+                    analysisManager->AddNtupleRow(1);
+                }
+                
+                else
+                {
+                    G4double primaryE = d_vec_primaryE.at(previousEventID);
+                    G4ThreeVector primaryDir =
+                    d_vec_primaryDir.at(previousEventID);
+                    G4double primaryP = CalculatePrimaryMomentum();
+                    
+                    analysisManager->FillNtupleIColumn(1, 0, previousEventID);
+                    analysisManager->FillNtupleDColumn(1, 1, primaryE);
+                    analysisManager->FillNtupleDColumn(1, 2, primaryP);
+                    analysisManager->FillNtupleDColumn(1, 3,
+                                                       primaryDir.getX());
+                    analysisManager->FillNtupleDColumn(1, 4,
+                                                       primaryDir.getY());
+                    analysisManager->FillNtupleDColumn(1, 5,
+                                                       primaryDir.getZ());
+                    analysisManager->FillNtupleIColumn(1, 6, ntracks);
+                    analysisManager->AddNtupleRow(1);
+                }
             }
         }
         
@@ -279,18 +304,32 @@ void RunAction::FillEventNtuple()
             // If eventID changes, previous event needs to be recorded...
             // Filling ntuple: event
             ntracks = d_vec_trkIDlist.size();
-            G4double primaryE = d_vec_primaryE.at(previousEventID);
-            G4ThreeVector primaryDir = d_vec_primaryDir.at(previousEventID);
-            G4double primaryP = CalculatePrimaryMomentum();
+            if (b_primary->isPythiaHepevtInput)
+            {
+                analysisManager->FillNtupleIColumn(1, 0, previousEventID);
+                analysisManager->FillNtupleIColumn(1, 1, ntracks);
+                analysisManager->AddNtupleRow(1);
+            }
             
-            analysisManager->FillNtupleIColumn(1, 0, previousEventID);
-            analysisManager->FillNtupleDColumn(1, 1, primaryE);
-            analysisManager->FillNtupleDColumn(1, 2, primaryP);
-            analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
-            analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
-            analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
-            analysisManager->FillNtupleIColumn(1, 6, ntracks);
-            analysisManager->AddNtupleRow(1);
+            else
+            {
+                G4double primaryE = d_vec_primaryE.at(previousEventID);
+                G4ThreeVector primaryDir =
+                d_vec_primaryDir.at(previousEventID);
+                G4double primaryP = CalculatePrimaryMomentum();
+                
+                analysisManager->FillNtupleIColumn(1, 0, previousEventID);
+                analysisManager->FillNtupleDColumn(1, 1, primaryE);
+                analysisManager->FillNtupleDColumn(1, 2, primaryP);
+                analysisManager->FillNtupleDColumn(1, 3,
+                                                   primaryDir.getX());
+                analysisManager->FillNtupleDColumn(1, 4,
+                                                   primaryDir.getY());
+                analysisManager->FillNtupleDColumn(1, 5,
+                                                   primaryDir.getZ());
+                analysisManager->FillNtupleIColumn(1, 6, ntracks);
+                analysisManager->AddNtupleRow(1);
+            }
                         
             // ... event data needs to be reset...
             d_vec_trkIDlist.clear();
@@ -307,17 +346,32 @@ void RunAction::FillEventNtuple()
             if (i == numberOfEntries - 1)
             {
                 ntracks = d_vec_trkIDlist.size();
-                primaryE = d_vec_primaryE.at(previousEventID);
-                primaryDir = d_vec_primaryDir.at(previousEventID);
-
-                analysisManager->FillNtupleIColumn(1, 0, previousEventID);
-                analysisManager->FillNtupleDColumn(1, 1, primaryE);
-                analysisManager->FillNtupleDColumn(1, 2, primaryP);
-                analysisManager->FillNtupleDColumn(1, 3, primaryDir.getX());
-                analysisManager->FillNtupleDColumn(1, 4, primaryDir.getY());
-                analysisManager->FillNtupleDColumn(1, 5, primaryDir.getZ());
-                analysisManager->FillNtupleIColumn(1, 6, ntracks);
-                analysisManager->AddNtupleRow(1);
+                if (b_primary->isPythiaHepevtInput)
+                {
+                    analysisManager->FillNtupleIColumn(1, 0, previousEventID);
+                    analysisManager->FillNtupleIColumn(1, 1, ntracks);
+                    analysisManager->AddNtupleRow(1);
+                }
+                
+                else
+                {
+                    G4double primaryE = d_vec_primaryE.at(previousEventID);
+                    G4ThreeVector primaryDir =
+                    d_vec_primaryDir.at(previousEventID);
+                    G4double primaryP = CalculatePrimaryMomentum();
+                    
+                    analysisManager->FillNtupleIColumn(1, 0, previousEventID);
+                    analysisManager->FillNtupleDColumn(1, 1, primaryE);
+                    analysisManager->FillNtupleDColumn(1, 2, primaryP);
+                    analysisManager->FillNtupleDColumn(1, 3,
+                                                       primaryDir.getX());
+                    analysisManager->FillNtupleDColumn(1, 4,
+                                                       primaryDir.getY());
+                    analysisManager->FillNtupleDColumn(1, 5,
+                                                       primaryDir.getZ());
+                    analysisManager->FillNtupleIColumn(1, 6, ntracks);
+                    analysisManager->AddNtupleRow(1);
+                }
             }
         }
     }
@@ -508,20 +562,24 @@ void RunAction::FillRunNtuple(const G4Run* run)
 {
     // Calling analysis manager to write ROOT file
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    
-    G4ParticleDefinition* particle;
-    particle = b_primary->GetParticleGun()->GetParticleDefinition();
+    G4int numberOfEvents = run->GetNumberOfEvent();
     
     // Filling ntuple: run
-    G4int numberOfEvents = run->GetNumberOfEvent();
-    G4String primaryName = particle->GetParticleName();
-    G4int primaryPDG = particle->GetPDGEncoding();
-    G4double primaryMass = particle->GetPDGMass();
-        
     analysisManager->FillNtupleIColumn(0, 0, numberOfEvents);
-    analysisManager->FillNtupleSColumn(0, 1, primaryName);
-    analysisManager->FillNtupleIColumn(0, 2, primaryPDG);
-    analysisManager->FillNtupleDColumn(0, 3, primaryMass);
+    
+    if (!b_primary->isPythiaHepevtInput)
+    {
+        G4ParticleDefinition* particle;
+        particle = b_primary->GetParticleGun()->GetParticleDefinition();
+        
+        G4String primaryName = particle->GetParticleName();
+        G4int primaryPDG = particle->GetPDGEncoding();
+        G4double primaryMass = particle->GetPDGMass();
+        
+        analysisManager->FillNtupleSColumn(0, 1, primaryName);
+        analysisManager->FillNtupleIColumn(0, 2, primaryPDG);
+        analysisManager->FillNtupleDColumn(0, 3, primaryMass);
+    }
     
     analysisManager->AddNtupleRow(0);
 }

@@ -22,25 +22,29 @@
 
 
 //---------------------------- BeginOfEventAction ---------------------------//
-void EventAction::BeginOfEventAction(const G4Event * event)
+void EventAction::BeginOfEventAction(const G4Event* event)
 {
-    // Initialisation per event
-    d_eventID = event->GetEventID();
-    d_trackEnergy = 0;
-    d_trackLength = 0;
-    
-    G4ThreeVector direction = RandomUnitaryThreeVector();
-    
-    b_primary->GetParticleGun()->SetParticleMomentumDirection(direction);
-    G4double primaryE = b_primary->GetParticleGun()->GetParticleEnergy();
-
-    b_runAction->FillRunEventData(primaryE, direction);
+    // Particle gun only
+    if (!b_primary->isPythiaHepevtInput)
+    {
+        // Initialisation per event
+        d_eventID = event->GetEventID();
+        d_trackEnergy = 0;
+        d_trackLength = 0;
+        
+        G4ThreeVector direction = RandomUnitaryThreeVector();
+        
+        b_primary->GetParticleGun()->SetParticleMomentumDirection(direction);
+        G4double primaryE = b_primary->GetParticleGun()->GetParticleEnergy();
+        
+        b_runAction->FillRunEventData(primaryE, direction);
+    }
 }
 
 
 //------------------------------- EventAction -------------------------------//
 EventAction::EventAction(PrimaryGeneratorAction* primGenAct, RunAction* run)
-: G4UserEventAction(), d_trackEnergy(0.), d_trackLength(0.),
+: G4UserEventAction(), d_eventID(0), d_trackEnergy(0.), d_trackLength(0.),
 b_primary(primGenAct), b_runAction(run)
 {}
 
@@ -52,7 +56,12 @@ EventAction::~EventAction()
 
 //----------------------------- EndOfEventAction ----------------------------//
 void EventAction::EndOfEventAction(const G4Event* /*event*/)
-{}
+{
+    if (b_primary->isPythiaHepevtInput)
+    {
+        d_eventID++;
+    }
+}
 
 
 //--------------------------------- AddStep ---------------------------------//

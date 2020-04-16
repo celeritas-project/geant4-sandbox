@@ -57,7 +57,6 @@ private:
     std::vector<G4double> d_vec_primaryE;
     std::vector<G4ThreeVector> d_vec_primaryDir;
     std::vector<G4int> d_vec_trkIDlist;
-
     
     // Track
     std::vector<G4double> d_vec_trkStepX;

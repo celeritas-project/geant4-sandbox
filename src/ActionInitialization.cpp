@@ -19,13 +19,7 @@
 
 //--------------------------- ActionInitialization --------------------------//
 ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization(), rootFile("rootout.root"),
-isCustomRootFile(false)
-{}
-
-ActionInitialization::ActionInitialization(G4String rootFile)
-: G4VUserActionInitialization(), rootFile(rootFile),
-isCustomRootFile(true)
+: G4VUserActionInitialization()
 {}
 
 
@@ -38,19 +32,22 @@ ActionInitialization::~ActionInitialization()
 // In case of multithread
 void ActionInitialization::BuildForMaster() const
 {
-    SetUserAction(new RunAction(new PrimaryGeneratorAction));
+    //SetUserAction(new RunAction(new PrimaryGeneratorAction(isPythiaHepevtInput)));
 }
 
 
 //---------------------------------- Build ----------------------------------//
 void ActionInitialization::Build() const
 {
-    PrimaryGeneratorAction* primaryGenAction = new PrimaryGeneratorAction();
+    PrimaryGeneratorAction* primaryGenAction =
+    new PrimaryGeneratorAction(isPythiaInput, pythiaInputFile);
+    
+    
     RunAction* runAction;
     
     if (isCustomRootFile)
     {
-        runAction = new RunAction(primaryGenAction, rootFile);
+        runAction = new RunAction(primaryGenAction, rootOutputFile);
     }
     else
     {
@@ -65,5 +62,27 @@ void ActionInitialization::Build() const
     SetUserAction(runAction);
     SetUserAction(eventAction);
     SetUserAction(steppingAction);
-}  
+}
 
+
+//--------------------------- IsPythiaHepevtInput ---------------------------//
+void ActionInitialization::IsPythiaHepevtInput(bool &isPythia)
+{
+    this->isPythiaInput = isPythia;
+}
+
+
+//---------------------------- SetRootOutputFile ----------------------------//
+void ActionInitialization::SetRootOutputFile(G4String rootOutputFile)
+{
+    this->rootOutputFile = rootOutputFile;
+    this->isCustomRootFile = true;
+}
+
+
+//---------------------------- SetPythiaInputFile ---------------------------//
+void ActionInitialization::SetPythiaInputFile(G4String pythiaInputFile)
+{
+    this->pythiaInputFile = pythiaInputFile;
+    this->isPythiaInput = true;
+}
