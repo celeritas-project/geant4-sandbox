@@ -16,6 +16,14 @@
 #include "G4VUserActionInitialization.hh"
 #include "globals.hh"
 
+// Project
+#include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
+#include "EventAction.hh"
+#include "SteppingAction.hh"
+#include "DetectorConstruction.hh"
+
+
 class DetectorConstruction;
 
 class ActionInitialization : public G4VUserActionInitialization

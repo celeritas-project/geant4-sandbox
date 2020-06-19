@@ -29,7 +29,7 @@
 #include "FTFP_BERT.hh"
 #include "G4VModularPhysicsList.hh"
 #include "G4GenericPhysicsList.hh"
-
+#include "G4PhysicsTable.hh"
 
 
 int main(int argc, char** argv)
@@ -157,20 +157,19 @@ int main(int argc, char** argv)
     {
         PrintPhysicsList();
     }
-
+    
     // Selecting the desired physics packages
     // Currently adding only EM physics
     std::vector<G4String>* physicsConstructor = new std::vector<G4String>;
     physicsConstructor->push_back("G4EmStandardPhysics");
-    //physicsConstructor->push_back("G4HadronPhysicsQGSP_BERT");
     
-    // Buiding the Physics List
+    // Building the Physics List
     G4VModularPhysicsList* physicsList =
     new G4GenericPhysicsList(physicsConstructor);
     
     // For a full Physics List, use the following pointer instead
     //G4VModularPhysicsList* physicsList = new FTFP_BERT;
-
+    
     // Initializing the Physics List
     runManager->SetUserInitialization(physicsList);
     
@@ -189,12 +188,12 @@ int main(int argc, char** argv)
     // The ActionInitialization class is responsible for calling all the
     // remaining classes:
     //
-    // - PrimaryGeneratorAction: Sets up the particle gun.
+    // - PrimaryGeneratorAction: Sets up the particle gun or Pythia input.
     // - RunAction: Opens ROOT file, creates ntuples at the beginning of the
     //   run, and writes/closes the ROOT file at the end.
     // - EventAction: Records event-like data into the ntuples.
     // - SteppingAction: Records particle-step-like data into the ntuples.
-
+    
     ActionInitialization* actionInitialization = new ActionInitialization();
     
     if (isCustomRootFile)
@@ -207,19 +206,19 @@ int main(int argc, char** argv)
     }
     
     runManager->SetUserInitialization(actionInitialization);
-
     
-    //----------------------------- UI Manager ------------------------------//
+    
+    //------------------------------ UI Manager -----------------------------//
     auto UImanager = G4UImanager::GetUIpointer();
-
+    
     // Initializing the UIManager kernel
     UImanager->ApplyCommand("/run/initialize");
     
-    // Uncoment to print loaded physics tables
+    // Uncoment to print loaded physics list
     //UImanager->ApplyCommand("/process/em/verbose 1");
-
     
-    //------------------------------- GUI -----------------------------------//
+    
+    //--------------------------------- GUI ---------------------------------//
     if (isGUIEnable)
     {
         // Visualization manager
@@ -229,7 +228,7 @@ int main(int argc, char** argv)
         // Starting user interface
         G4UIExecutive* userInterface = nullptr;
         userInterface = new G4UIExecutive(argc, argv);
-
+        
         // Executing interface config macros
         UImanager->ApplyCommand("/control/execute init.mac");
         UImanager->ApplyCommand("/control/execute vis.mac");
@@ -252,7 +251,7 @@ int main(int argc, char** argv)
     }
     
     
-    //---------------------------- Terminal (no GUI) ------------------------//
+    //-------------------------- Terminal (no GUI) --------------------------//
     else
     {
         if (isBeamOn)
@@ -262,9 +261,18 @@ int main(int argc, char** argv)
     }
     
     
+    //------------------------- Dumping physics tables ----------------------//
+    // See PrintInfo.hh
+    
+    // Using UImanager
+    //DumpPhysicsTables("/path/to/folder");
+    
+    // Looping over particles and processes manually
+    //DumpPhysicsTablesManually("/path/to/folder");
+    
+    
     //---------------------------- Job termination --------------------------//
     // User actions, physics list, and detector construction are owned and
     // deleted by the run manager
     delete runManager;
 }
-

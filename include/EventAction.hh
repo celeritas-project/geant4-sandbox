@@ -16,9 +16,19 @@
 #include <vector>
 
 // Geant4
+#include "G4RunManager.hh"
+#include "G4Event.hh"
+#include "G4UnitsTable.hh"
+#include "Randomize.hh"
+#include "G4SystemOfUnits.hh"
 #include "G4UserEventAction.hh"
 #include "G4ThreeVector.hh"
 #include "globals.hh"
+
+// Project
+#include "RunAction.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "Analysis.hh"
 
 
 class PrimaryGeneratorAction;

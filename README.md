@@ -1,6 +1,6 @@
 
-README
-======
+Geant4-Sandbox
+==============
 
 
 # About:
@@ -69,7 +69,8 @@ loads the hepevt.data file as the input for the Geant4 simulation, runs 1 event,
 and produces a ROOT output file.
 
 
-# Files:
+
+# Files / folders description:
 
 * **cms2018.gdml**: self-explanatory.
 * **gui_menu.mac**: Adds options to the menu bar of the GUI session.
@@ -77,6 +78,9 @@ and produces a ROOT output file.
 * **pythiaInput.cmd**: Pythia8 input example, to be used with the `-gen` option.
 * **slabsGeometry.gdml**: Basic geometry composed by 4 slabs of stainless steel.
 * **vis.mac**: Macro for the GUI gdml visualization settings.
+* **g4PhysicsTableParser/**: Code for parsing the ascii physics tables produced
+by Geant4 and creating a single root output file.
+
 
 
 # Notes / Issues
@@ -84,7 +88,6 @@ and produces a ROOT output file.
 Currently, trying to view simulated events in the cms2018.gdml geometry using
 `-v` takes an unsurmountable amount of time. Running events with the GUI is only
 fine for small geometries.
-
 
 
 ___

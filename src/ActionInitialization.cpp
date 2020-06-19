@@ -8,13 +8,7 @@
 //---------------------------------------------------------------------------//
 
 
-// Project
 #include "ActionInitialization.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "RunAction.hh"
-#include "EventAction.hh"
-#include "SteppingAction.hh"
-#include "DetectorConstruction.hh"
 
 
 //--------------------------- ActionInitialization --------------------------//

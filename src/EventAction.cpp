@@ -8,17 +8,7 @@
 //---------------------------------------------------------------------------//
 
 
-// Project
 #include "EventAction.hh"
-#include "RunAction.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "Analysis.hh"
-
-// Geant4
-#include "G4RunManager.hh"
-#include "G4Event.hh"
-#include "G4UnitsTable.hh"
-#include "Randomize.hh"
 
 
 //---------------------------- BeginOfEventAction ---------------------------//
@@ -32,9 +22,11 @@ void EventAction::BeginOfEventAction(const G4Event* event)
         d_trackEnergy = 0;
         d_trackLength = 0;
         
-        G4ThreeVector direction = RandomUnitaryThreeVector();
-        
-        b_primary->GetParticleGun()->SetParticleMomentumDirection(direction);
+        //G4ThreeVector direction = RandomUnitaryThreeVector();
+        G4ThreeVector direction(1., 0., 0.);
+        //G4ThreeVector pos(-100*mm, -100*mm, -100*mm);
+        //b_primary->GetParticleGun()->SetParticlePosition(pos);
+        //b_primary->GetParticleGun()->SetParticleMomentumDirection(direction);
         G4double primaryE = b_primary->GetParticleGun()->GetParticleEnergy();
         
         b_runAction->FillRunEventData(primaryE, direction);
@@ -95,9 +87,12 @@ G4ThreeVector EventAction::RandomUnitaryThreeVector()
         }
     }
             
-    G4ThreeVector direction(sign[0] * G4UniformRand(),
-                            sign[1] * G4UniformRand(),
-                            sign[2] * G4UniformRand());
+    //G4ThreeVector direction(sign[0] * G4UniformRand(),
+                            //sign[1] * G4UniformRand(),
+                            //sign[2] * G4UniformRand());
     
+    G4ThreeVector direction(1,
+                            0,
+                            0);
     return direction;
 }

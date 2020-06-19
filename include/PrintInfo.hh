@@ -13,6 +13,7 @@
 
 
 // Geant4
+#include "G4UImanager.hh"
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4GeometryManager.hh"
@@ -22,6 +23,7 @@
 #include "G4PhysicsConstructorFactory.hh"
 
 
+//------------------------------ PrintAuxList -------------------------------//
 void PrintAuxList(const G4GDMLAuxListType* auxInfoList,
                   G4String prepend = "| ")
 {
@@ -45,7 +47,8 @@ void PrintAuxList(const G4GDMLAuxListType* auxInfoList,
 }
 
 
-static void PrintAuxInfo(const G4GDMLParser &parser)
+//------------------------------ PrintAuxInfo -------------------------------//
+void PrintAuxInfo(const G4GDMLParser &parser)
 {
     G4cout << G4endl;
     
@@ -94,7 +97,8 @@ static void PrintAuxInfo(const G4GDMLParser &parser)
 }
 
 
-static void PrintPhysicsList()
+//---------------------------- PrintPhysicsList -----------------------------//
+void PrintPhysicsList()
 {
     G4cout << G4endl;
     G4cout << "List of all available Physics constructors:" << G4endl;
@@ -108,5 +112,53 @@ static void PrintPhysicsList()
     G4cout << G4endl;
 }
   
+
+//--------------------------- DumpPhysicsTables -----------------------------//
+void DumpPhysicsTables(G4String directoryPath)
+{
+    auto UImanager = G4UImanager::GetUIpointer();
+
+    G4String storeCmd = "/run/particle/storePhysicsTable " + directoryPath;
+    
+    UImanager->ApplyCommand(storeCmd);
+    UImanager->ApplyCommand("/run/particle/setStoredInAscii 1");
+    UImanager->ApplyCommand("/run/particle/applyCuts true");
+    UImanager->ApplyCommand("/run/particle/dumpCutValues all");
+}
+
+
+//----------------------- DumpPhysicsTablesManually -------------------------//
+void DumpPhysicsTablesManually(G4String directoryPath)
+{
+    // Fetching particle list
+    auto particleIterator = G4ParticleTable::GetParticleTable()->GetIterator();
+    particleIterator->reset();
+    
+    while((*particleIterator)())
+    {
+        G4ParticleDefinition* particle = particleIterator->value();
+        
+        // Fetching process list for this particle type
+        G4ProcessVector* processVector =
+        (particle->GetProcessManager())->GetProcessList();
+                
+        // Looping over processes
+        for (std::size_t j = 0; j < processVector->size(); ++j)
+        {
+            // Storing tables
+            bool isTableStored =
+            (*processVector)[j]->StorePhysicsTable(particle, directoryPath, 1);
+            
+            if (!isTableStored)
+            {
+                G4String comment =  "Fail to store physics table for ";
+                comment += (*processVector)[j]->GetProcessName();
+                comment += "(" + particle->GetParticleName()  + ")";
+                G4Exception("G4VUserPhysicsList::StorePhysicsTable",
+                            "Run0282", JustWarning, comment);
+            }
+        }
+    }
+}
 
 #endif

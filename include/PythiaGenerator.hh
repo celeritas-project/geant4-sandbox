@@ -12,7 +12,7 @@
 #define PythiaGenerator_h 1
 
 
-//C++
+// C++
 #include <iostream>
 
 // Pythia8

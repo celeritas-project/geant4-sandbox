@@ -8,19 +8,7 @@
 //---------------------------------------------------------------------------//
 
 
-// Project
 #include "PrimaryGeneratorAction.hh"
-
-// Geant4
-#include "G4RunManager.hh"
-#include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4Event.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4HEPEvtInterface.hh"
-
 
 
 //------------------------- PrimaryGeneratorAction --------------------------//
@@ -47,12 +35,15 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(bool const
         // WARNING: Values may be overwritten by
         //          EventAction::BeginOfEventAction
         G4ParticleDefinition* particle;
-        particle = G4ParticleTable::GetParticleTable()->FindParticle("e-");
+        particle = G4ParticleTable::GetParticleTable()->FindParticle("proton");
         
         b_particleGun->SetParticleDefinition(particle);
-        b_particleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-        b_particleGun->SetParticleEnergy(1 * TeV);
-        b_particleGun->SetParticlePosition(G4ThreeVector());
+        b_particleGun->SetParticleMomentumDirection(G4ThreeVector(1., 0., 0.));
+        b_particleGun->SetParticleEnergy(500 * MeV);
+        G4ThreeVector pos(-1000*mm, 0, 0);
+        b_particleGun->SetParticlePosition(pos);
+
+        //b_particleGun->SetParticlePosition(G4ThreeVector());
     }
     
     // slabsGeometry.gdml center is at (0, 0, 9*cm)

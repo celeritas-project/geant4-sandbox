@@ -8,16 +8,7 @@
 //---------------------------------------------------------------------------//
 
 
-// Project
 #include "SteppingAction.hh"
-#include "EventAction.hh"
-#include "RunAction.hh"
-#include "DetectorConstruction.hh"
-
-// Geant4
-#include "G4Step.hh"
-#include "G4RunManager.hh"
-#include "Analysis.hh"
 
 
 //----------------------------- SteppingAction ------------------------------//

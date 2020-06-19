@@ -8,16 +8,7 @@
 //---------------------------------------------------------------------------//
 
 
-// Project
 #include "RunAction.hh"
-#include "EventAction.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "Analysis.hh"
-
-// Geant4
-#include "G4Run.hh"
-#include "G4RunManager.hh"
-#include "G4ThreeVector.hh"
 
 
 //---------------------------- BeginOfRunAction -----------------------------//
