@@ -78,8 +78,10 @@ and produces a ROOT output file.
 * **pythiaInput.cmd**: Pythia8 input example, to be used with the `-gen` option.
 * **slabsGeometry.gdml**: Basic geometry composed by 4 slabs of stainless steel.
 * **vis.mac**: Macro for the GUI gdml visualization settings.
-* **g4PhysicsTableParser/**: Code for parsing the ascii physics tables produced
-by Geant4 and creating a single root output file.
+* **g4PhysicsTableParser/**: External code for parsing the ascii physics tables
+produced by Geant4 and creating a single root output file. The folder also
+includes the g4PhysicsTableReader, which shows how to read the data stored in
+the ROOT file produced by the g4PhysicsTableParser.
 
 
 

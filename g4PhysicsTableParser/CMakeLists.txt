@@ -28,8 +28,10 @@ find_package(ROOT REQUIRED)
 
 
 #------------------------------------------------------------------------------
-# Adding the executable, and linking it to the needed libraries
+# Adding the executables, and linking it to the needed libraries
 #------------------------------------------------------------------------------
+
+#---------------------------- g4PhysicsTableParser ----------------------------
 add_executable(g4PhysicsTableParser main.cpp
   src/G4PhysicsTableParser.cpp
   include/G4PhysicsTableParser.hh
@@ -43,8 +45,16 @@ target_link_libraries(g4PhysicsTableParser PRIVATE
   ROOT::Core ROOT::Tree
 )
 
+#---------------------------- g4PhysicsTableReader ----------------------------
+add_executable(g4PhysicsTableReader g4PhysicsTableReader.cpp)
+
+target_link_libraries(g4PhysicsTableReader PRIVATE
+  ROOT::Core ROOT::Tree
+)
 
 #------------------------------------------------------------------------------
-# Installing the executable to the current directory
+# Installing executables in the current directory
 #------------------------------------------------------------------------------
 install(TARGETS g4PhysicsTableParser DESTINATION .)
+install(TARGETS g4PhysicsTableReader DESTINATION .)
+
